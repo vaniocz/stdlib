@@ -1,0 +1,21 @@
+{
+    "name": "vanio/stdlib",
+    "description": "General purpose classes extending the PHP language.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adam Hojka",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {"Vanio\\": "src/"}
+    },
+    "require": {
+        "php": ">=7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.2.*"
+    }
+}
