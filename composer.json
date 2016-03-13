@@ -1,7 +1,7 @@
 {
     "name": "vanio/stdlib",
     "description": "General purpose classes extending the PHP language.",
-    "keywords": ["standard library", "enum", "strings"],
+    "keywords": ["standard library", "enum", "strings", "string utility", "objects", "objects utility"],
     "type": "library",
     "homepage": "https://github.com/vaniocz/vanio-di-extra-bundle",
     "license": "MIT",
