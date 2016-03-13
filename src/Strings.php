@@ -2,11 +2,6 @@
 
 namespace Vanio\Stdlib;
 
-use ErrorException;
-use InvalidArgumentException;
-use Iterator;
-use ReflectionClass;
-
 class Strings
 {
     /**
