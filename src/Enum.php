@@ -142,7 +142,7 @@ abstract class Enum
      */
     final public function __clone()
     {
-        throw new ErrorException('Enumeration values are singletons and therefore cannot be cloned.');
+        throw new ErrorException('Enumeration values are implemented using flyweight pattern and therefore cannot be cloned.');
     }
 
     /**
