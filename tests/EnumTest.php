@@ -81,7 +81,7 @@ class EnumTest extends PHPUnit_Framework_TestCase
     function test_enum_values_cannot_be_cloned()
     {
         $this->expectException(ErrorException::class);
-        $this->expectExceptionMessage('Enumeration values are singletons and therefore cannot be cloned.');
+        $this->expectExceptionMessage('Enumeration values are implemented using flyweight pattern and therefore cannot be cloned.');
 
         clone Foo::BAR();
     }
