@@ -31,7 +31,7 @@ class Strings
      * @param string $value
      * @return bool
      */
-    static function endsWith(string $string, string $value)
+    public static function endsWith(string $string, string $value)
     {
         return $value === '' || substr($string, -strlen($value)) === $value;
     }
