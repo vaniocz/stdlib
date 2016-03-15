@@ -9,7 +9,7 @@ class Strings
      *
      * @codeCoverageIgnore
      */
-    final private function __construct()
+    private function __construct()
     {}
 
     /**
