@@ -38,15 +38,23 @@ class UniversalJsonSerializer
     {
         $encoded = [$value];
         array_walk_recursive($encoded, function (&$value) use ($objectIds) {
-            if (is_object($value)) {
-                $meta = [
-                    '#' => !isset($objectIds[$value]) ? $objectIds[$value] = count($objectIds) : $objectIds[$value],
-                    'fqn' => get_class($value),
-                ];
-
-                $value = self::encode(self::objectProperties($value), $objectIds);
-                $value['μ'] = $meta;
+            if (!is_object($value)) {
+                return;
             }
+
+            $isReference = isset($objectIds[$value]);
+
+            $meta = [
+                '#' => !$isReference ? $objectIds[$value] = count($objectIds) : $objectIds[$value],
+                'fqn' => get_class($value),
+            ];
+
+            $properties = $isReference
+                ? array_filter(self::objectProperties($value), 'is_scalar')
+                : self::objectProperties($value);
+
+            $value = self::encode($properties, $objectIds);
+            $value['μ'] = $meta;
         });
 
         return $encoded[0];

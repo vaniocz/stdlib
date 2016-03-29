@@ -69,4 +69,23 @@ class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
             Serializer::serialize([$foo, $bar])
         );
     }
+
+    function test_serializer_can_handle_circular_references()
+    {
+        $foo = new stdClass();
+        $bar = new stdClass();
+        $baz = new stdClass();
+
+        $foo->bar = [$bar];
+        $bar->foo = [$foo];
+        $bar->qux = 'qux';
+        $baz->foo = $foo;
+        $baz->bar = $bar;
+
+        $str = '{"bar":[{"foo":[{"μ":{"#":0,"fqn":"stdClass"}}],"qux":"qux","μ":{"#":1,"fqn":"stdClass"}}],"μ":{"#":0,"fqn":"stdClass"}},'
+             . '{"qux":"qux","μ":{"#":1,"fqn":"stdClass"}},'
+             . '{"foo":{"μ":{"#":0,"fqn":"stdClass"}},"bar":{"qux":"qux","μ":{"#":1,"fqn":"stdClass"}},"μ":{"#":2,"fqn":"stdClass"}}';
+
+        $this->assertSame('[' . $str . ']', Serializer::serialize([$foo, $bar, $baz]));
+    }
 }
