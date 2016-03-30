@@ -82,10 +82,20 @@ class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
         $baz->foo = $foo;
         $baz->bar = $bar;
 
-        $str = '{"bar":[{"foo":[{"μ":{"#":0,"fqn":"stdClass"}}],"qux":"qux","μ":{"#":1,"fqn":"stdClass"}}],"μ":{"#":0,"fqn":"stdClass"}},'
-             . '{"qux":"qux","μ":{"#":1,"fqn":"stdClass"}},'
-             . '{"foo":{"μ":{"#":0,"fqn":"stdClass"}},"bar":{"qux":"qux","μ":{"#":1,"fqn":"stdClass"}},"μ":{"#":2,"fqn":"stdClass"}}';
+        $str = '[{'
+                . '"bar":[{"foo":[{"μ":{"#":0,"fqn":"stdClass"}}],"qux":"qux","μ":{"#":1,"fqn":"stdClass"}}],'
+                . '"μ":{"#":0,"fqn":"stdClass"}' .
+                '},' .
+                '{'
+                . '"qux":"qux",'
+                . '"μ":{"#":1,"fqn":"stdClass"}' .
+                '},' .
+                '{'
+                . '"foo":{"μ":{"#":0,"fqn":"stdClass"}},'
+                . '"bar":{"qux":"qux","μ":{"#":1,"fqn":"stdClass"}},'
+                . '"μ":{"#":2,"fqn":"stdClass"}' .
+                '}]';
 
-        $this->assertSame('[' . $str . ']', Serializer::serialize([$foo, $bar, $baz]));
+        $this->assertSame($str, Serializer::serialize([$foo, $bar, $baz]));
     }
 }
