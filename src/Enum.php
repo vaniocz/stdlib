@@ -37,9 +37,8 @@ abstract class Enum
     {
         static $instances = [];
 
-        return !isset($instances[static::class][$valueName])
-            ? $instances[static::class][$valueName] = self::create($valueName)
-            : $instances[static::class][$valueName];
+        return $instances[static::class][$valueName]
+            ?? $instances[static::class][$valueName] = self::create($valueName);
     }
 
     /**
@@ -132,9 +131,8 @@ abstract class Enum
     {
         static $constants = [];
 
-        return !isset($constants[static::class])
-            ? $constants[static::class] = array_keys((new ReflectionClass(static::class))->getConstants())
-            : $constants[static::class];
+        return $constants[static::class]
+            ?? $constants[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
     }
 
     /**
