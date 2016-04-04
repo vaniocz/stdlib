@@ -5,6 +5,7 @@ namespace Vanio\Stdlib\Tests;
 use PHPUnit_Framework_TestCase;
 use stdClass;
 use Vanio\Stdlib\Tests\Fixtures\Bar;
+use Vanio\Stdlib\Tests\Fixtures\WakeableSleeper;
 use Vanio\Stdlib\UniversalJsonSerializer as Serializer;
 
 class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
@@ -97,5 +98,16 @@ class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
                 '}]';
 
         $this->assertSame($str, Serializer::serialize([$foo, $bar, $baz]));
+    }
+
+    function test_magic_method_sleep_is_called_on_all_objects()
+    {
+        $mock = $this->getMockForAbstractClass(WakeableSleeper::class);
+        $mock->expects($this->exactly(2))->method('__sleep')->willReturn(['myself']);
+
+        $this->assertSame(
+            sprintf('{"myself":[{"μ":{"#":0,"fqn":"%s"}}],"μ":{"#":0,"fqn":"%s"}}', get_class($mock), get_class($mock)),
+            Serializer::serialize($mock)
+        );
     }
 }

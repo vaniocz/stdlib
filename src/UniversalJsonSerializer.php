@@ -70,11 +70,17 @@ class UniversalJsonSerializer
     private static function objectProperties($object): array
     {
         try {
-            return Closure::bind(function () use ($object) {
+            $properties = Closure::bind(function () use ($object) {
                 return get_object_vars($object);
             }, null, $object)->__invoke();
         } catch (Exception $e) {
-            return get_object_vars($object);
+            $properties = get_object_vars($object);
         }
+
+        if (method_exists($object, '__sleep')) {
+            $properties = array_intersect_key($properties, array_flip($object->__sleep()));
+        }
+
+        return $properties;
     }
 }
