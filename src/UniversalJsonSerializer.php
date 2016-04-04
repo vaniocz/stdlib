@@ -4,6 +4,7 @@ namespace Vanio\Stdlib;
 
 use Closure;
 use Exception;
+use Serializable;
 use SplObjectStorage;
 
 /**
@@ -77,7 +78,9 @@ class UniversalJsonSerializer
             $properties = get_object_vars($object);
         }
 
-        if (method_exists($object, '__sleep')) {
+        if ($object instanceof Serializable) {
+            $properties = ['$' => $object->serialize()];
+        } elseif (method_exists($object, '__sleep')) {
             $properties = array_intersect_key($properties, array_flip($object->__sleep()));
         }
 
