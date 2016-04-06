@@ -50,12 +50,7 @@ class UniversalJsonSerializer
                 'fqn' => get_class($value),
             ];
 
-            $properties = $isReference
-                ? array_filter(self::objectProperties($value), 'is_scalar')
-                : self::objectProperties($value);
-
-            $value = self::encode($properties, $objectIds);
-            $value['μ'] = $meta;
+            $value = ($isReference ? [] : self::encode(self::objectProperties($value), $objectIds)) + ['μ' => $meta];
         });
 
         return $encoded[0];

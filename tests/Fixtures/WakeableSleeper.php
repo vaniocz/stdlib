@@ -2,16 +2,51 @@
 
 namespace Vanio\Stdlib\Tests\Fixtures;
 
-abstract class WakeableSleeper
+class WakeableSleeper
 {
-    protected $myself;
+    /** @var static */
+    private $myself;
+
+    /** @var static */
+    private $twin;
+
+    /** @var int */
+    private $numberOfSleepCalls = 0;
+
+    /** @var int */
+    private $numberOfWakeUpCalls = 0;
 
     public function __construct()
     {
         $this->myself = [$this];
+        $this->twin = clone $this;
+        $this->twin->twin = $this;
     }
 
-    abstract public function __sleep(): array;
+    public function __sleep(): array
+    {
+        ++$this->numberOfSleepCalls;
 
-    abstract public function __wakeup();
+        return ['myself', 'twin'];
+    }
+
+    public function __wakeup()
+    {
+        ++$this->numberOfWakeUpCalls;
+    }
+
+    public function numberOfSleepCalls(): int
+    {
+        return $this->numberOfSleepCalls;
+    }
+
+    public function numberOfWakeUpCalls(): int
+    {
+        return $this->numberOfWakeUpCalls;
+    }
+
+    public function twin(): self
+    {
+        return $this->twin;
+    }
 }

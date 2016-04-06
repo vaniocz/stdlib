@@ -89,12 +89,11 @@ class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
                 . '"μ":{"#":0,"fqn":"stdClass"}' .
                 '},' .
                 '{'
-                . '"qux":"qux",'
                 . '"μ":{"#":1,"fqn":"stdClass"}' .
                 '},' .
                 '{'
                 . '"foo":{"μ":{"#":0,"fqn":"stdClass"}},'
-                . '"bar":{"qux":"qux","μ":{"#":1,"fqn":"stdClass"}},'
+                . '"bar":{"μ":{"#":1,"fqn":"stdClass"}},'
                 . '"μ":{"#":2,"fqn":"stdClass"}' .
                 '}]';
 
@@ -103,31 +102,51 @@ class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
 
     function test_magic_method_sleep_is_called_on_all_objects()
     {
-        $mock = $this->getMockForAbstractClass(WakeableSleeper::class);
-        $mock->expects($this->exactly(2))->method('__sleep')->willReturn(['myself']);
+        $sleeper = new WakeableSleeper();
 
-        $this->assertSame(
-            sprintf('{"myself":[{"μ":{"#":0,"fqn":"%s"}}],"μ":{"#":0,"fqn":"%s"}}', get_class($mock), get_class($mock)),
-            Serializer::serialize($mock)
-        );
+        $serialized = Serializer::serialize($sleeper);
+
+        $str = '{'
+                    . '"myself":[{"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}}],'
+                    . '"twin":{'
+                        . '"myself":[{"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}}],'
+                        . '"twin":{"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}},'
+                        . '"μ":{"#":1,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}'
+                    . '},'
+                    . '"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}' .
+                '}';
+
+        $this->assertSame($str, $serialized);
+    }
+
+    function test_magic_method_sleep_is_called_on_all_objects_just_once()
+    {
+        $sleeper = new WakeableSleeper();
+
+        Serializer::serialize($sleeper);
+
+        $this->assertSame(1, $sleeper->numberOfSleepCalls());
+        $this->assertSame(1, $sleeper->twin()->numberOfSleepCalls());
     }
 
     function test_method_serialize_is_called_when_object_implements_serializable()
     {
-        $mock = $this->getMockForAbstractClass(SerializableWakeableSleeper::class);
-        $mock->expects($this->once())->method('serialize')->willReturn('__foo_bar__');
+        $sleeper = new SerializableWakeableSleeper();
 
         $this->assertSame(
-            sprintf('{"$":"__foo_bar__","μ":{"#":0,"fqn":"%s"}}', get_class($mock), get_class($mock)),
-            Serializer::serialize($mock)
+            '{"$":"__serialized__","μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\SerializableWakeableSleeper"}}',
+            Serializer::serialize($sleeper)
         );
+
+        $this->assertSame(1, $sleeper->numberOfSerializeCalls());
     }
 
     function test_magic_method_sleep_is_not_called_when_object_implements_serializable()
     {
-        $mock = $this->getMockForAbstractClass(SerializableWakeableSleeper::class);
-        $mock->expects($this->never())->method('__sleep');
+        $sleeper = new SerializableWakeableSleeper();
 
-        Serializer::serialize($mock);
+        Serializer::serialize($sleeper);
+
+        $this->assertSame(0, $sleeper->numberOfSleepCalls());
     }
 }
