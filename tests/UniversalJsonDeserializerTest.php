@@ -71,4 +71,53 @@ class UniversalJsonDeserializerTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame($objects[0], $objects[1]->foo);
     }
+
+    function serializedSleeper(): array
+    {
+        return [['{'
+                    . '"myself":[{"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}}],'
+                    . '"twin":{'
+                        . '"myself":[{"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}}],'
+                        . '"twin":{"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}},'
+                        . '"μ":{"#":1,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}'
+                    . '},'
+                    . '"μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\WakeableSleeper"}' .
+                '}']];
+    }
+
+    /** @dataProvider serializedSleeper */
+    function test_magic_method_wakeup_is_called_on_all_objects(string $serializedSleeper)
+    {
+        $sleeper = Deserializer::deserialize($serializedSleeper);
+
+        $this->assertSame(1, $sleeper->numberOfWakeUpCalls());
+    }
+
+    /** @dataProvider serializedSleeper */
+    function test_magic_method_wakeup_is_called_on_all_objects_just_once(string $serializedSleeper)
+    {
+        $sleeper = Deserializer::deserialize($serializedSleeper);
+
+        $this->assertSame(1, $sleeper->numberOfWakeUpCalls());
+        $this->assertSame(1, $sleeper->twin()->numberOfWakeUpCalls());
+    }
+
+    function test_method_unserialize_is_called_when_object_implements_serializable()
+    {
+        $sleeper = Deserializer::deserialize(
+            '{"$":"__serialized__","μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\SerializableWakeableSleeper"}}'
+        );
+
+        $this->assertSame(1, $sleeper->numberOfUnserializeCalls());
+        $this->assertSame('__serialized__', $sleeper->data());
+    }
+
+    function test_magic_method_wakeup_is_not_called_when_object_implements_serializable()
+    {
+        $sleeper = Deserializer::deserialize(
+            '{"$":"__serialized__","μ":{"#":0,"fqn":"Vanio\\\Stdlib\\\Tests\\\Fixtures\\\SerializableWakeableSleeper"}}'
+        );
+
+        $this->assertSame(0, $sleeper->numberOfWakeUpCalls());
+    }
 }

@@ -6,9 +6,14 @@ use Serializable;
 
 class SerializableWakeableSleeper extends WakeableSleeper implements Serializable
 {
+    /** @var int */
     private $numberOfSerializeCalls = 0;
 
+    /** @var int */
     private $numberOfUnserializeCalls = 0;
+
+    /** @var string */
+    private $data;
 
     public function serialize(): string
     {
@@ -20,8 +25,7 @@ class SerializableWakeableSleeper extends WakeableSleeper implements Serializabl
     public function unserialize($serialized)
     {
         ++$this->numberOfUnserializeCalls;
-
-        return '__unserialized__';
+        $this->data = $serialized;
     }
 
     public function numberOfSerializeCalls(): int
@@ -32,5 +36,10 @@ class SerializableWakeableSleeper extends WakeableSleeper implements Serializabl
     public function numberOfUnserializeCalls(): int
     {
         return $this->numberOfUnserializeCalls;
+    }
+
+    public function data(): string
+    {
+        return $this->data;
     }
 }

@@ -4,6 +4,7 @@ namespace Vanio\Stdlib;
 
 use Closure;
 use ReflectionClass;
+use Serializable;
 
 class UniversalJsonDeserializer
 {
@@ -62,15 +63,18 @@ class UniversalJsonDeserializer
         $objects[$id] = $object = $reflection->newInstanceWithoutConstructor();
         unset($data['μ']);
 
-        $decode = function &(&$value) use (&$objects) {
-            return self::decode($value, $objects);
-        };
+        if ($object instanceof Serializable) {
+            $object->unserialize($data['$']);
+            return $object;
+        }
 
-        Closure::bind(function () use ($object, &$data, $decode) {
-            foreach ($data as $key => &$value) {
-                $object->$key = $decode($value);
-            }
-        }, null, $reflection->isInternal() ? null : $object)->__invoke();
+        self::setObjectProperties($object, $data, $reflection->isInternal(), function &(&$value) use (&$objects) {
+            return self::decode($value, $objects);
+        });
+
+        if (method_exists($object, '__wakeup')) {
+            $object->__wakeup();
+        }
 
         return $object;
     }
@@ -87,6 +91,23 @@ class UniversalJsonDeserializer
         static $reflections = [];
 
         return $reflections[$class] ?? $reflections[$class] = new ReflectionClass($class);
+    }
+
+    /**
+     * Set the given object properties.
+     *
+     * @param mixed $object The object which properties should be set.
+     * @param mixed[] $properties The object properties.
+     * @param bool $isInternal Tells whether the object class is internal.
+     * @param Closure $propertyDecoder The object property decoder.
+     */
+    private static function setObjectProperties($object, array &$properties, bool $isInternal, Closure $propertyDecoder)
+    {
+        Closure::bind(function () use ($object, &$properties, $propertyDecoder) {
+            foreach ($properties as $key => &$value) {
+                $object->$key = $propertyDecoder($value);
+            }
+        }, null, $isInternal ? null : $object)->__invoke();
     }
 
     /**
