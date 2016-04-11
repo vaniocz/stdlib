@@ -60,6 +60,11 @@ class LinkedHashMapTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(isset($this->map['test']));
     }
 
+    function test_null_is_returned_when_a_value_with_requested_key_is_not_present()
+    {
+        $this->assertNull($this->map['bogus']);
+    }
+
     function test_value_can_be_removed_from_the_map_by_its_key()
     {
         $this->map['test'] = 'Hello!';
