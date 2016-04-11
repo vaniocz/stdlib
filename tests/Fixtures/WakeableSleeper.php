@@ -45,6 +45,11 @@ class WakeableSleeper
         return $this->numberOfWakeUpCalls;
     }
 
+    public function myself(): self
+    {
+        return $this->myself;
+    }
+
     public function twin(): self
     {
         return $this->twin;

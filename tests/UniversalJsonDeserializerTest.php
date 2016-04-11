@@ -85,7 +85,10 @@ class UniversalJsonDeserializerTest extends PHPUnit_Framework_TestCase
                 '}']];
     }
 
-    /** @dataProvider serializedSleeper */
+    /**
+     * @dataProvider serializedSleeper
+     * @param string $serializedSleeper
+     */
     function test_magic_method_wakeup_is_called_on_all_objects(string $serializedSleeper)
     {
         $sleeper = Deserializer::deserialize($serializedSleeper);
@@ -93,7 +96,10 @@ class UniversalJsonDeserializerTest extends PHPUnit_Framework_TestCase
         $this->assertSame(1, $sleeper->numberOfWakeUpCalls());
     }
 
-    /** @dataProvider serializedSleeper */
+    /**
+     * @dataProvider serializedSleeper
+     * @param string $serializedSleeper
+     */
     function test_magic_method_wakeup_is_called_on_all_objects_just_once(string $serializedSleeper)
     {
         $sleeper = Deserializer::deserialize($serializedSleeper);

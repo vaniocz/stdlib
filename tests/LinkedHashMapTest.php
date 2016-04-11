@@ -88,7 +88,7 @@ class LinkedHashMapTest extends PHPUnit_Framework_TestCase
             [1.01, 'test1.01'],
             ['foo', 'bar'],
             [['name' => 'John', 'surname' => 'Doe'], 'John Doe'],
-            [$objectKey, 'Object']
+            [$objectKey, 'Object'],
         ];
 
         foreach ($expected as list($key, $value)) {
@@ -190,7 +190,7 @@ class LinkedHashMapTest extends PHPUnit_Framework_TestCase
             [1.01, 'test1.01'],
             ['foo', 'bar'],
             [['name' => 'John', 'surname' => 'Doe'], 'John Doe'],
-            [$objectKey, 'Object']
+            [$objectKey, 'Object'],
         ];
 
         foreach ($expected as list($key, $value)) {
