@@ -18,11 +18,11 @@
         "slevomat/coding-standard": "^1.0.5"
     },
     "autoload": {
-        "psr-4": {"Vanio\\Stdlib\\": "src/"}
+        "psr-4": {"Vanio\\Stdlib\\": "src/"},
+        "exclude-from-classmap": ["/tests/"]
     },
     "autoload-dev": {
-        "psr-4": {"Vanio\\Stdlib\\Tests\\": "tests/"},
-        "exclude-from-classmap": ["/tests/"]
+        "psr-4": {"Vanio\\Stdlib\\Tests\\": "tests/"}
     },
     "scripts": {
         "test": "\"vendor/bin/phpunit\"",
