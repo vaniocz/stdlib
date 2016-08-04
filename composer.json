@@ -21,7 +21,8 @@
         "psr-4": {"Vanio\\Stdlib\\": "src/"}
     },
     "autoload-dev": {
-        "psr-4": { "Vanio\\Stdlib\\Tests\\": "tests/" }
+        "psr-4": {"Vanio\\Stdlib\\Tests\\": "tests/"},
+        "exclude-from-classmap": ["/tests/"]
     },
     "scripts": {
         "test": "\"vendor/bin/phpunit\"",
