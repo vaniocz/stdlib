@@ -118,6 +118,6 @@ class EnumTest extends PHPUnit_Framework_TestCase
         $this->expectException(ErrorException::class);
         $this->expectExceptionMessage('Enumeration values cannot be deserialized.');
 
-        unserialize('O:22:"Vanio\Stdlib\Tests\Foo":1:{s:4:"name";s:3:"BAR"}');
+        unserialize('O:22:"Vanio\Stdlib\Tests\Foo":1:{s:4:"name";s:3:"BAR";}');
     }
 }
