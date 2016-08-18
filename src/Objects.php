@@ -39,8 +39,8 @@ class Objects
             } else {
                 return $object::$$property;
             }
-
         };
+
         $getPropertyValue = $getPropertyValue->bindTo(is_object($object) ? $object : null, $scope);
 
         return $getPropertyValue();
