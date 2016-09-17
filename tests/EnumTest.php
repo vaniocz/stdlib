@@ -4,7 +4,7 @@ namespace Vanio\Stdlib\Tests;
 
 use ErrorException;
 use InvalidArgumentException;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Vanio\Stdlib\Enum;
 
 class Foo extends Enum
@@ -24,7 +24,7 @@ class Foo extends Enum
     }
 }
 
-class EnumTest extends PHPUnit_Framework_TestCase
+class EnumTest extends TestCase
 {
     function test_value_can_be_instantiated_by_its_name()
     {

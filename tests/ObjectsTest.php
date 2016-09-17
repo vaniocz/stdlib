@@ -2,12 +2,12 @@
 
 namespace Vanio\Stdlib\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Vanio\Stdlib\Objects;
 use Vanio\Stdlib\Tests\Fixtures\Bar;
 use Vanio\Stdlib\Tests\Fixtures\Baz;
 
-class ObjectsTest extends PHPUnit_Framework_TestCase
+class ObjectsTest extends TestCase
 {
     function test_getting_type()
     {

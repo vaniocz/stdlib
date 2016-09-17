@@ -376,7 +376,7 @@ class Uri
 
     private function resolvePath(string $host = null, string $path): string
     {
-        return $host !== null && ($path[0] ?? null) !== '/' ? '/' . $path : $path;
+        return $host !== null && !Strings::startsWith($path, '/') ? '/' . $path : $path;
     }
 
     /**

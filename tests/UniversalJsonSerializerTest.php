@@ -2,14 +2,14 @@
 
 namespace Vanio\Stdlib\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use Vanio\Stdlib\Tests\Fixtures\Bar;
 use Vanio\Stdlib\Tests\Fixtures\SerializableWakeableSleeper;
 use Vanio\Stdlib\Tests\Fixtures\WakeableSleeper;
 use Vanio\Stdlib\UniversalJsonSerializer as Serializer;
 
-class UniversalJsonSerializerTest extends PHPUnit_Framework_TestCase
+class UniversalJsonSerializerTest extends TestCase
 {
     function test_single_scalar_value_is_serialized_correctly()
     {

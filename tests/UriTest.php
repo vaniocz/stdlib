@@ -2,10 +2,10 @@
 
 namespace Vanio\Stdlib\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Vanio\Stdlib\Uri;
 
-class UriTest extends PHPUnit_Framework_TestCase
+class UriTest extends TestCase
 {
     function test_parsing_uri_parts()
     {

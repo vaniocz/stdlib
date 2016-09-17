@@ -2,12 +2,12 @@
 
 namespace Vanio\Stdlib\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use stdClass;
 use Vanio\Stdlib\Tests\Fixtures\Bar;
 use Vanio\Stdlib\UniversalJsonDeserializer as Deserializer;
 
-class UniversalJsonDeserializerTest extends PHPUnit_Framework_TestCase
+class UniversalJsonDeserializerTest extends TestCase
 {
     function test_single_scalar_value_is_deserialized_correctly()
     {

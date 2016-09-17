@@ -2,10 +2,10 @@
 
 namespace Vanio\Stdlib\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Vanio\Stdlib\Strings;
 
-class StringsTest extends PHPUnit_Framework_TestCase
+class StringsTest extends TestCase
 {
     function test_string_starts_with_given_string()
     {

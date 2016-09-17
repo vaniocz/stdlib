@@ -2,10 +2,10 @@
 
 namespace Vanio\Stdlib\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Vanio\Stdlib\LinkedHashMap;
 
-class LinkedHashMapTest extends PHPUnit_Framework_TestCase
+class LinkedHashMapTest extends TestCase
 {
     /** @var LinkedHashMap */
     private $map;
