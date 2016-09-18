@@ -31,6 +31,33 @@ class Uri
         'ldap' => 389,
     ];
 
+    /**
+     * PHP's rawurlencode() encodes all chars except "a-zA-Z0-9-._~" according to RFC 3986. We want to allow some chars
+     * to be used in their literal form (reasons below). Other chars inside the path must of course be encoded, e.g.
+     * "?" and "#" (would be interpreted wrongly as query and fragment identifier),
+     * "'" and """ (are used as delimiters in HTML).
+     */
+    const DECODED_CHARACTERS = [
+        // the slash can be used to designate a hierarchical structure and we want allow using it with this meaning
+        // some webservers don't allow the slash in encoded form in the path for security reasons anyway
+        // see http://stackoverflow.com/questions/4069002/http-400-if-2f-part-of-get-url-in-jboss
+        '%2F' => '/',
+        // the following chars are general delimiters in the URI specification but have only special meaning
+        // in the authority component so they can safely be used in the path in unencoded form
+        '%40' => '@',
+        '%3A' => ':',
+        // these chars are only sub-delimiters that have no predefined meaning and can therefore be used literally
+        // so URI producing applications can use these chars to delimit subcomponents in a path segment without being
+        // encoded for better readability
+        '%3B' => ';',
+        '%2C' => ',',
+        '%3D' => '=',
+        '%2B' => '+',
+        '%21' => '!',
+        '%2A' => '*',
+        '%7C' => '|',
+    ];
+
     /** @var string|null */
     private $scheme;
 
@@ -234,7 +261,9 @@ class Uri
 
     public function query(): string
     {
-        return http_build_query($this->queryParameters, '', '&', PHP_QUERY_RFC3986);
+        $query = http_build_query($this->queryParameters, '', '&', PHP_QUERY_RFC3986);
+
+        return strtr($query, self::DECODED_CHARACTERS);
     }
 
     /**
@@ -334,7 +363,7 @@ class Uri
             && $this->port() === $uri->port()
             && $this->user === $uri->user
             && $this->password === $uri->password
-            && self::unescape($this->path, '%/') === self::unescape($uri->path, '%/')
+            && rawurldecode($this->path) === rawurldecode($uri->path)
             && $thisQueryParameters === $uriQueryParameters
             && $this->fragment === $uri->fragment;
     }
@@ -349,29 +378,6 @@ class Uri
         parse_str($queryString, $query);
 
         return $query;
-    }
-
-    /**
-     * Unescapes URI similarly to rawurldecode but preserves reserved chars encoded.
-     *
-     * @param string $uri
-     * @param string $reservedCharacters
-     * @return string
-     */
-    public static function unescape(string $uri, string $reservedCharacters = '%;/?:@&=+$,'): string
-    {
-        if ($reservedCharacters !== '') {
-            $pattern = substr(chunk_split(bin2hex($reservedCharacters), 2, '|'), 0, -1);
-            $uri = preg_replace_callback(
-                "~%($pattern)~i",
-                function ($match) {
-                    return '%25' . strtoupper($match[1]);
-                },
-                $uri
-            );
-        }
-
-        return rawurldecode($uri);
     }
 
     private function resolvePath(string $host = null, string $path): string

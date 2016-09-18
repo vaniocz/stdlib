@@ -28,6 +28,12 @@ class UriTest extends TestCase
         $this->assertSame('https://user:password@example.com:8080/path/123?foo=bar#fragment', (string) $uri);
     }
 
+    function test_query_is_properly_encoded()
+    {
+        $this->assertSame('foo=/bar', (new Uri('?foo=/bar'))->query());
+        $this->assertSame('foo=/%24bar', (new Uri('?foo=/$bar'))->query());
+    }
+
     function test_parsing_invalid_uri()
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -104,8 +110,6 @@ class UriTest extends TestCase
         $this->assertEquals(['foo' => 'bar', 'baz' => 'qux'], $uri->withAppendedQuery('baz=qux')->queryParameters());
         $this->assertEquals(['foo' => 'bar', 'baz' => 'qux'], $uri->withAppendedQuery(['baz' => 'qux'])->queryParameters());
         $this->assertEquals(['foo' => 'foo'], $uri->withAppendedQuery('foo=foo')->queryParameters());
-
-        //TODO: removing removing
     }
 
     function test_uri_equals_to_another_uri()
@@ -159,17 +163,5 @@ class UriTest extends TestCase
         $this->assertSame(['a_b' => 'value', 'c' => ['d e' => 'value']], Uri::parseQuery('a b=value&c[d e]=value'));
         $this->assertSame(['a_b' => 'value', 'c' => ['d.e' => 'value']], Uri::parseQuery('a.b=value&c[d.e]=value'));
         $this->assertSame(['key"\'' => '"\''], Uri::parseQuery('key"\'="\'')); // magic quotes
-    }
-
-    function test_unescaping()
-    {
-        $this->assertSame('foo + bar', Uri::unescape('foo + bar'));
-        $this->assertSame('foo + bar', Uri::unescape('foo + bar', ''));
-        $this->assertSame('foo', Uri::unescape('%66%6F%6F', ''));
-        $this->assertSame('f%6F%6F', Uri::unescape('%66%6F%6F', 'o'));
-        $this->assertSame('%66oo', Uri::unescape('%66%6F%6F', 'f'));
-        $this->assertSame('%66%6F%6F', Uri::unescape('%66%6F%6F', 'fo'));
-        $this->assertSame('%66%6F%6F', Uri::unescape('%66%6f%6f', 'fo'));
-        $this->assertSame("%00\x01%02", Uri::unescape('%00%01%02', "\x00\x02"));
     }
 }

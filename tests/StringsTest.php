@@ -14,12 +14,26 @@ class StringsTest extends TestCase
         $this->assertFalse(Strings::startsWith('lorem ipsum', 'Lorem'));
     }
 
+    function test_string_starts_with_given_strings()
+    {
+        $this->assertTrue(Strings::startsWith('lorem ipsum', ['lorem', 'ipsum']));
+        $this->assertTrue(Strings::startsWith('lorem ipsum', ['ipsum', 'lorem']));
+        $this->assertFalse(Strings::startsWith('lorem ipsum', ['Lorem', 'Ipsum']));
+    }
+
     function test_string_ends_with_given_string()
     {
         $this->assertTrue(Strings::endsWith('lorem ipsum', 'ipsum'));
         $this->assertTrue(Strings::endsWith('lorem ipsum', ''));
         $this->assertFalse(Strings::endsWith('lorem ipsum', 'Ipsum'));
         $this->assertFalse(Strings::endsWith('lorem ipsum', 'lorem ipsum '));
+    }
+
+    function test_string_ends_with_given_strings()
+    {
+        $this->assertTrue(Strings::startsWith('lorem ipsum', ['lorem', 'ipsum']));
+        $this->assertTrue(Strings::startsWith('lorem ipsum', ['ipsum', 'lorem']));
+        $this->assertFalse(Strings::startsWith('lorem ipsum', ['Lorem', 'Ipsum']));
     }
 
     function test_string_contains_given_string()
@@ -30,5 +44,13 @@ class StringsTest extends TestCase
         $this->assertFalse(Strings::contains('lorem ipsum', 'foo'));
         $this->assertFalse(Strings::contains('lorem ipsum', 'bar'));
         $this->assertFalse(Strings::contains('lorem ipsum', ' lorem'));
+    }
+
+    function test_string_contains_given_strings()
+    {
+        $this->assertTrue(Strings::contains('lorem ipsum', ['lorem', 'ipsum']));
+        $this->assertTrue(Strings::contains('lorem ipsum', ['ipsum', 'lorem']));
+        $this->assertTrue(Strings::contains('lorem ipsum', ['rem']));
+        $this->assertFalse(Strings::contains('lorem ipsum', ['Lorem', 'Ipsum']));
     }
 }
