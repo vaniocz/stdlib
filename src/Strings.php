@@ -125,18 +125,26 @@ class Strings
      */
     public static function slugify(string $string, string $additionalCharacter = null, bool $lowercase = true): string
     {
-        $string = self::toAscii($string);
+        static $slugs = [];
 
-        if ($lowercase) {
-            $string = strtolower($string);
+        if ($slug = $slugs[$string][$additionalCharacter][$lowercase] ?? null) {
+            return $slug;
         }
 
-        $string = preg_replace(
+        $slug = self::toAscii($string);
+
+        if ($lowercase) {
+            $slug = strtolower($slug);
+        }
+
+        $slug = preg_replace(
             sprintf('~[^a-z0-9%s]+~i', $additionalCharacter !== null ? preg_quote($additionalCharacter, '~') : ''),
             '-',
-            $string
+            $slug
         );
+        $slug = trim($slug, '-');
+        $slugs[$string][$additionalCharacter][$lowercase] = $slug;
 
-        return trim($string, '-');
+        return $slug;
     }
 }
