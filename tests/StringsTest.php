@@ -53,4 +53,34 @@ class StringsTest extends TestCase
         $this->assertTrue(Strings::contains('lorem ipsum', ['rem']));
         $this->assertFalse(Strings::contains('lorem ipsum', ['Lorem', 'Ipsum']));
     }
+
+    function test_converting_string_to_ascii()
+    {
+        $this->assertSame('Internationalizaetion', Strings::toAscii('Iñtërnâtiônàlizætiøn'));
+        $this->assertSame(
+            'Prilis ZLUTOUCKY KUN upel dabelske ody',
+            Strings::toAscii('Příliš ŽLUŤOUČKÝ KŮŇ úpěl ďábelské ódy')
+        );
+        $this->assertSame('Tarikh', Strings::toAscii('Taʾrikh'));
+        $this->assertSame('Z `\'"^~?', Strings::toAscii("\xc5\xbd `'\"^~?"));
+        $this->assertSame('"""\'\'\'>><<^', Strings::toAscii('„“”‚‘’»«°'));
+        $this->assertSame('', Strings::toAscii("\xF0\x90\x80\x80")); // U+10000
+        $this->assertSame('', Strings::toAscii("\xC2\xA4")); // non-ASCII character
+        $this->assertSame('a b', Strings::toAscii("a\xC2\xA0b")); // non-breaking space
+
+        if (class_exists('Transliterator') && \Transliterator::create('Any-Latin; Latin-ASCII')) {
+            $this->assertSame('Athena->Moskva', Strings::toAscii('Αθήνα→Москва'));
+        }
+    }
+
+    function test_converting_string_to_web_safe_characters()
+    {
+        $this->assertSame('internationalizaetion', Strings::slugify('&Iñtërnâtiônàlizætiøn!'));
+        $this->assertSame(
+            'Prilis-ZLUTOUCKY-KUN-upel-dabelske-ody',
+            Strings::slugify('&Příliš ŽLUŤOUČKÝ KŮŇ úpěl ďábelské ódy!', null, false)
+        );
+        $this->assertSame('1-4-!', Strings::slugify("\xc2\xBC !", '!')); // non-ASCII character
+        $this->assertSame('a-b', Strings::slugify("a\xC2\xA0b")); // non-breaking space
+    }
 }
