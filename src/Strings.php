@@ -2,16 +2,8 @@
 
 namespace Vanio\Stdlib;
 
-class Strings
+abstract class Strings
 {
-    /**
-     * Prevent instantiating.
-     *
-     * @codeCoverageIgnore
-     */
-    private function __construct()
-    {}
-
     /**
      * Find out whether the given $string starts with any of the given $values.
      *
@@ -131,7 +123,7 @@ class Strings
             return $slug;
         }
 
-        $slug = self::toAscii($string);
+        $slug = static::toAscii($string);
 
         if ($lowercase) {
             $slug = strtolower($slug);

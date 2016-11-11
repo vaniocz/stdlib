@@ -83,4 +83,22 @@ class StringsTest extends TestCase
         $this->assertSame('1-4-!', Strings::slugify("\xc2\xBC !", '!')); // non-ASCII character
         $this->assertSame('a-b', Strings::slugify("a\xC2\xA0b")); // non-breaking space
     }
+
+    function test_slugify_uses_cache()
+    {
+        $class = get_class(new class extends Strings {
+            public static $toAsciiCalled = 0;
+
+            public static function toAscii(string $string): string
+            {
+                ++self::$toAsciiCalled;
+                return parent::toAscii($string);
+            }
+        });
+
+        $class::slugify('test');
+        $class::slugify('test');
+
+        $this->assertSame(1, $class::$toAsciiCalled);
+    }
 }
