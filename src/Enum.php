@@ -87,6 +87,19 @@ abstract class Enum
     }
 
     /**
+     * Get all the class constants.
+     *
+     * @return string[] All the class constants.
+     */
+    protected static function constants(): array
+    {
+        static $constants = [];
+
+        return $constants[static::class]
+            ?? $constants[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
+    }
+
+    /**
      * Create value with the given name.
      *
      * @param string $valueName The name of the value.
@@ -120,19 +133,6 @@ abstract class Enum
         }
 
         return constant($constant);
-    }
-
-    /**
-     * Get all the class constants.
-     *
-     * @return string[] All the class constants.
-     */
-    private static function constants(): array
-    {
-        static $constants = [];
-
-        return $constants[static::class]
-            ?? $constants[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
     }
 
     /**
