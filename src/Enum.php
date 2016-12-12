@@ -26,6 +26,42 @@ abstract class Enum
     {}
 
     /**
+     * Box the given plain value.
+     * This is just an alias of the method box() with a bit more standard name.
+     *
+     * @param scalar|array|null $plainValue The plain value to be boxed.
+     *
+     * @return static The boxed value.
+     *
+     * @throws InvalidArgumentException If the given plain value is not within the enumeration.
+     */
+    final public static function create($plainValue): self
+    {
+        return self::box($plainValue);
+    }
+
+    /**
+     * Box the given plain value.
+     *
+     * @param scalar|array|null $plainValue The plain value to be boxed.
+     *
+     * @return static The boxed value.
+     *
+     * @throws InvalidArgumentException If the given plain value is not within the enumeration.
+     */
+    final public static function box($plainValue): self
+    {
+        foreach (static::constants() as $name) {
+            if (self::constant($name) === $plainValue) {
+                return self::__callStatic($name, []);
+            }
+        }
+
+        $message = sprintf('Value %s is not within %s enumeration.', $plainValue, static::class);
+        throw new InvalidArgumentException($message);
+    }
+
+    /**
      * Get the value with the given name.
      *
      * @param string $valueName The name of the value.
@@ -60,30 +96,21 @@ abstract class Enum
      */
     final public static function values(): Iterator
     {
-        foreach (self::constants() as $name) {
+        foreach (static::constants() as $name) {
             yield self::__callStatic($name, []);
         }
     }
 
     /**
-     * Box the given plain value.
+     * Get all available plain values.
      *
-     * @param scalar|array|null $plainValue The plain value to be boxed.
-     *
-     * @return static The boxed value.
-     *
-     * @throws InvalidArgumentException If the given plain value is not within the enumeration.
+     * @return array
      */
-    final public static function box($plainValue): self
+    final public static function plainValues(): Iterator
     {
-        foreach (self::constants() as $name) {
-            if (self::constant($name) === $plainValue) {
-                return self::__callStatic($name, []);
-            }
+        foreach (static::constants() as $name) {
+            yield self::constant($name);
         }
-
-        $message = sprintf('Value %s is not within %s enumeration.', $plainValue, static::class);
-        throw new InvalidArgumentException($message);
     }
 
     /**
@@ -91,27 +118,12 @@ abstract class Enum
      *
      * @return string[] All the class constants.
      */
-    protected static function constants(): array
+    public static function constants(): array
     {
         static $constants = [];
 
         return $constants[static::class]
             ?? $constants[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
-    }
-
-    /**
-     * Box the given plain value.
-     * This is just an alias of the method box() with a bit more standard name.
-     *
-     * @param scalar|array|null $plainValue The plain value to be boxed.
-     *
-     * @return static The boxed value.
-     *
-     * @throws InvalidArgumentException If the given plain value is not within the enumeration.
-     */
-    final public static function create($plainValue): self
-    {
-        return self::box($plainValue);
     }
 
     /**
