@@ -97,6 +97,11 @@ class EnumTest extends TestCase
         $this->assertSame(Foo::QUX(), Foo::box(Foo::QUX));
     }
 
+    function test_method_create_is_alias_of_box()
+    {
+        $this->assertSame(Foo::box(Foo::BAR), Foo::create(Foo::BAR));
+    }
+
     function test_plain_values_not_within_enumeration_cannot_be_boxed()
     {
         $this->expectException(InvalidArgumentException::class);

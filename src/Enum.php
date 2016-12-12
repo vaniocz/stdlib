@@ -38,7 +38,7 @@ abstract class Enum
         static $instances = [];
 
         return $instances[static::class][$valueName]
-            ?? $instances[static::class][$valueName] = self::create($valueName);
+            ?? $instances[static::class][$valueName] = self::instantiate($valueName);
     }
 
     /**
@@ -100,13 +100,28 @@ abstract class Enum
     }
 
     /**
-     * Create value with the given name.
+     * Box the given plain value.
+     * This is just an alias of the method box() with a bit more standard name.
+     *
+     * @param scalar|array|null $plainValue The plain value to be boxed.
+     *
+     * @return static The boxed value.
+     *
+     * @throws InvalidArgumentException If the given plain value is not within the enumeration.
+     */
+    final public static function create($plainValue): self
+    {
+        return self::box($plainValue);
+    }
+
+    /**
+     * Instantiate value with the given name.
      *
      * @param string $valueName The name of the value.
      *
-     * @return static The newly created value.
+     * @return static The newly instantiated value.
      */
-    private static function create(string $valueName): self
+    private static function instantiate(string $valueName): self
     {
         $value = new static(...(array) self::constant($valueName));
         $value->name = $valueName;
