@@ -51,7 +51,7 @@ abstract class Enum
      */
     final public static function box($plainValue): self
     {
-        foreach (static::constants() as $name) {
+        foreach (static::valueNames() as $name) {
             if (self::constant($name) === $plainValue) {
                 return self::__callStatic($name, []);
             }
@@ -96,7 +96,7 @@ abstract class Enum
      */
     final public static function values(): Iterator
     {
-        foreach (static::constants() as $name) {
+        foreach (static::valueNames() as $name) {
             yield self::__callStatic($name, []);
         }
     }
@@ -104,26 +104,26 @@ abstract class Enum
     /**
      * Get all available plain values.
      *
-     * @return array
+     * @return Iterator All available plain values.
      */
     final public static function plainValues(): Iterator
     {
-        foreach (static::constants() as $name) {
+        foreach (static::valueNames() as $name) {
             yield self::constant($name);
         }
     }
 
     /**
-     * Get all the class constants.
+     * Get names of all the values in this enumeration.
      *
-     * @return string[] All the class constants.
+     * @return string[] Names of all the values in this enumeration.
      */
-    public static function constants(): array
+    public static function valueNames(): array
     {
-        static $constants = [];
+        static $valueNames = [];
 
-        return $constants[static::class]
-            ?? $constants[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
+        return $valueNames[static::class]
+            ?? $valueNames[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
     }
 
     /**

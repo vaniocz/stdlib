@@ -125,4 +125,14 @@ class EnumTest extends TestCase
 
         unserialize('O:22:"Vanio\Stdlib\Tests\Foo":1:{s:4:"name";s:3:"BAR";}');
     }
+
+    function test_get_names_of_all_values()
+    {
+        $this->assertSame(['BAR', 'BAZ', 'QUX'], Foo::valueNames());
+    }
+
+    function test_get_all_plain_values()
+    {
+        $this->assertSame(['FooBar', ['FooBaz'], ['FooQux1', 'FooQux2']], iterator_to_array(Foo::plainValues()));
+    }
 }
