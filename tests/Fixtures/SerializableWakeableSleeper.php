@@ -22,6 +22,9 @@ class SerializableWakeableSleeper extends WakeableSleeper implements Serializabl
         return '__serialized__';
     }
 
+    /**
+     * @param string $serialized
+     */
     public function unserialize($serialized)
     {
         ++$this->numberOfUnserializeCalls;

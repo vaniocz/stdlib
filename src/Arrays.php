@@ -29,7 +29,7 @@ abstract class Arrays
     }
 
     /**
-     * @param array &$array
+     * @param array $array
      * @param string|int|array $path
      * @return mixed
      * @throws \InvalidArgumentException
@@ -51,7 +51,7 @@ abstract class Arrays
     }
 
     /**
-     * @param array &$array
+     * @param array $array
      * @param string|int|array $path
      * @param mixed $value
      */
@@ -62,7 +62,7 @@ abstract class Arrays
     }
 
     /**
-     * @param array &$array
+     * @param array $array
      * @param string|int|array $path
      * @throws \InvalidArgumentException
      */

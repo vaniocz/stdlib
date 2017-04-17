@@ -11,7 +11,7 @@ class ArraysTest extends TestCase
     {
         $array = [
             'foo' => 'bar',
-            'baz' => ['qux']
+            'baz' => ['qux'],
         ];
         $this->assertSame('bar', Arrays::get($array, 'foo'));
         $this->assertSame('qux', Arrays::get($array, ['baz', 0]));
@@ -29,7 +29,7 @@ class ArraysTest extends TestCase
     {
         $array = [
             'foo' => 'bar',
-            'baz' => ['qux']
+            'baz' => ['qux'],
         ];
         $reference = &Arrays::getReference($array, 'foo');
         $reference = 'foo';
@@ -40,7 +40,7 @@ class ArraysTest extends TestCase
         $this->assertSame([
             'foo' => 'foo',
             'baz' => ['baz'],
-            'qux' => 'qux'
+            'qux' => 'qux',
         ], $array);
     }
 
@@ -59,7 +59,7 @@ class ArraysTest extends TestCase
         Arrays::set($array, ['bar', 0], 'baz');
         $this->assertSame([
             'foo' => 'foo',
-            'bar' => ['baz']
+            'bar' => ['baz'],
         ], $array);
     }
 
@@ -67,7 +67,7 @@ class ArraysTest extends TestCase
     {
         $array = [
             'foo' => 'bar',
-            'baz' => ['qux']
+            'baz' => ['qux'],
         ];
         Arrays::unset($array, 'foo');
         Arrays::unset($array, ['baz', 0]);

@@ -13,7 +13,10 @@ class Foo extends Enum
     const BAZ = ['FooBaz'];
     const QUX = ['FooQux1', 'FooQux2'];
 
+    /** @var string */
     public $value;
+
+    /** @var string|null */
     public $secondValue;
 
     protected function __construct(string $value, string $secondValue = null)

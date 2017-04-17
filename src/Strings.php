@@ -29,7 +29,7 @@ abstract class Strings
      * @param string|string[] $values
      * @return bool
      */
-    public static function endsWith(string $string, $values)
+    public static function endsWith(string $string, $values): bool
     {
         foreach ((array) $values as $value) {
             if ($value === '' || substr($string, -strlen($value)) === $value) {
@@ -48,7 +48,7 @@ abstract class Strings
      * @param string|string[] $values
      * @return bool
      */
-    public static function contains($string, $values): bool
+    public static function contains(string $string, $values): bool
     {
         foreach ((array) $values as $value) {
             if (strpos($string, $value) !== false) {
@@ -111,7 +111,7 @@ abstract class Strings
      * Convert the given $string to web safe characters [a-z0-9-].
      *
      * @param string $string
-     * @param string $additionalCharacter Additional allowed characters
+     * @param string|null $additionalCharacter Additional allowed characters
      * @param bool $lowercase Whether to lowercase or not
      * @return string
      */

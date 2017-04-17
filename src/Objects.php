@@ -74,7 +74,7 @@ class Objects
      * @param string $prefix
      * @return array
      */
-    public static function getConstants($class, string $prefix = '')
+    public static function getConstants($class, string $prefix = ''): array
     {
         static $constants = [];
 

@@ -229,7 +229,7 @@ class Uri
 
         $authority = $this->host;
 
-        if ($this->port !== null && self::DEFAULT_PORTS[$this->scheme] ?? false !== $this->port) {
+        if ($this->port !== null && (self::DEFAULT_PORTS[$this->scheme] ?? false) !== $this->port) {
             $authority .= ':' . $this->port;
         }
 
@@ -301,6 +301,11 @@ class Uri
         return $this->queryParameters;
     }
 
+    /**
+     * @param string $parameter
+     * @param mixed $default
+     * @return mixed
+     */
     public function getQueryParameter(string $parameter, $default = null)
     {
         return $this->queryParameters[$parameter] ?? $default;

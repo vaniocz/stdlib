@@ -3,9 +3,9 @@
 namespace Vanio\Stdlib;
 
 use Closure;
-use Exception;
 use Serializable;
 use SplObjectStorage;
+use Throwable;
 
 /**
  * Can serialize any serializable PHP value into a JSON encoded string.
@@ -69,7 +69,7 @@ class UniversalJsonSerializer
             $properties = Closure::bind(function () use ($object) {
                 return get_object_vars($object);
             }, null, $object)->__invoke();
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $properties = get_object_vars($object);
         }
 

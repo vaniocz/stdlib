@@ -87,6 +87,7 @@ class StringsTest extends TestCase
     function test_slugify_uses_cache()
     {
         $class = get_class(new class extends Strings {
+            /** @var int */
             public static $toAsciiCalled = 0;
 
             public static function toAscii(string $string): string
