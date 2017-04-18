@@ -261,9 +261,7 @@ class Uri
 
     public function query(): string
     {
-        $query = http_build_query($this->queryParameters, '', '&', PHP_QUERY_RFC3986);
-
-        return strtr($query, self::DECODED_CHARACTERS);
+        return self::encodeQuery($this->queryParameters);
     }
 
     /**
@@ -383,6 +381,11 @@ class Uri
         parse_str($queryString, $query);
 
         return $query;
+    }
+
+    public static function encodeQuery(array $query): string
+    {
+        return strtr(http_build_query($query, '', '&', PHP_QUERY_RFC3986), self::DECODED_CHARACTERS);
     }
 
     private function resolvePath(string $host = null, string $path): string
