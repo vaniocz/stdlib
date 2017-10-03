@@ -59,6 +59,21 @@ abstract class Strings
         return false;
     }
 
+    public function substring(string $string, int $start, int $length = null): string
+    {
+        return mb_substr($string, $start, $length, 'UTF-8');
+    }
+
+    public static function upper(string $string): string
+    {
+        return mb_strtoupper($string, 'UTF-8');
+    }
+
+    public static function upperFirst(string $string): string
+    {
+        return self::upper(self::substring($string, 0, 1)) . self::substring($string, 1);
+    }
+
     /**
      * Convert the given $string to ASCII.
      *
