@@ -82,4 +82,19 @@ abstract class Arrays
 
         unset($array[$key]);
     }
+
+    public static function iterableToArray(iterable $iterable): array
+    {
+        if (is_array($iterable)) {
+            return $iterable;
+        }
+
+        $array = [];
+
+        foreach ($iterable as $key => $value) {
+            $array[$key] = $value;
+        }
+
+        return $array;
+    }
 }
