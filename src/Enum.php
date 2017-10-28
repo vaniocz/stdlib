@@ -190,6 +190,7 @@ abstract class Enum
      * Prevents implementing of the \Serializable interface.
      *
      * @codeCoverageIgnore
+     * @phpcsSuppress SlevomatCodingStandard.Classes.UnusedPrivateElements.UnusedMethod
      */
     private function unserialize()
     {}

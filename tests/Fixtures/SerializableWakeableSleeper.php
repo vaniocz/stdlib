@@ -24,6 +24,7 @@ class SerializableWakeableSleeper extends WakeableSleeper implements Serializabl
 
     /**
      * @param string $serialized
+     * @phpcsSuppress SlevomatCodingStandard.TypeHints.TypeHintDeclaration.MissingParameterTypeHint
      */
     public function unserialize($serialized)
     {
