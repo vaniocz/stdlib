@@ -58,7 +58,7 @@ class Objects
     {
         $setPropertyValue = function ($value) use ($object, $property) {
             if (is_object($object)) {
-                $object->$property  = $value;
+                $object->$property = $value;
             } else {
                 $object::$$property = $value;
             }
@@ -97,5 +97,31 @@ class Objects
         }
 
         return $constants[$class][$prefix];
+    }
+
+    /**
+     * @param array|object $object
+     * @param callable $callback
+     * @param string[] $visitedObjects
+     */
+    public static function walk($object, callable $callback, array $visitedObjects = [])
+    {
+        array_walk($object, function (&$value, string $property) use ($object, $callback, $visitedObjects) {
+            if (is_object($value)) {
+                $hash = spl_object_hash($value);
+
+                if (isset($visitedObjects[$hash])) {
+                    return;
+                }
+
+                $visitedObjects[$hash] = true;
+            }
+
+            if (call_user_func_array($callback, [&$value, $property, $object]) !== false) {
+                if (is_array($value) || is_object($value)) {
+                    self::walk($value, $callback, $visitedObjects);
+                }
+            }
+        });
     }
 }

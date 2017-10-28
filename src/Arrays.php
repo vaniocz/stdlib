@@ -83,32 +83,6 @@ abstract class Arrays
         unset($array[$key]);
     }
 
-    /**
-     * @param array|object $object
-     * @param callable $callback
-     * @param string[] $visitedObjects
-     */
-    public static function walk($object, callable $callback, array $visitedObjects = [])
-    {
-        array_walk($object, function (&$value, string $property) use ($object, $callback, $visitedObjects) {
-            if (is_object($value)) {
-                $hash = spl_object_hash($value);
-
-                if (isset($visitedObjects[$hash])) {
-                    return;
-                }
-
-                $visitedObjects[$hash] = true;
-            }
-
-            if (call_user_func_array($callback, [&$value, $property, $object]) !== false) {
-                if (is_array($value) || is_object($value)) {
-                    self::walk($value, $callback, $visitedObjects);
-                }
-            }
-        });
-    }
-
     public static function iterableToArray(iterable $iterable): array
     {
         if (is_array($iterable)) {
