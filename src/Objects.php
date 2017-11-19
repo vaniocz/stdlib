@@ -104,7 +104,7 @@ class Objects
      * @param callable $callback
      * @param string[] $visitedObjects
      */
-    public static function walk($object, callable $callback, array $visitedObjects = [])
+    public static function walk(&$object, callable $callback, array $visitedObjects = [])
     {
         array_walk($object, function (&$value, string $property) use ($object, $callback, $visitedObjects) {
             if (is_object($value)) {
