@@ -102,4 +102,9 @@ class StringsTest extends TestCase
 
         $this->assertSame(1, $class::$toAsciiCalled);
     }
+
+    function test_converting_snake_case_to_camel_case()
+    {
+        $this->assertSame('LoremIpsum', Strings::snakeToCamelCase('lorem_ipsum'));
+    }
 }
