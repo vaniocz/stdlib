@@ -154,4 +154,9 @@ abstract class Strings
 
         return $slug;
     }
+
+    public static function snakeToCamelCase(string $string): string
+    {
+        return str_replace('_', '', ucwords($string, "_ \t\r\n\f\v"));
+    }
 }
