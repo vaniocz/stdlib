@@ -59,7 +59,7 @@ abstract class Strings
         return false;
     }
 
-    public function substring(string $string, int $start, int $length = null): string
+    public static function substring(string $string, int $start, int $length = null): string
     {
         return mb_substr($string, $start, $length, 'UTF-8');
     }
@@ -69,9 +69,24 @@ abstract class Strings
         return mb_strtoupper($string, 'UTF-8');
     }
 
+    public static function lower(string $string): string
+    {
+        return mb_strtolower($string, 'UTF-8');
+    }
+
+    public static function capitalize(string $string): string
+    {
+        return mb_convert_case($string, MB_CASE_TITLE, 'UTF-8');
+    }
+
     public static function upperFirst(string $string): string
     {
         return self::upper(self::substring($string, 0, 1)) . self::substring($string, 1);
+    }
+
+    public static function lowerFirst(string $string): string
+    {
+        return self::lower(self::substring($string, 0, 1)) . self::substring($string, 1);
     }
 
     /**
@@ -153,5 +168,18 @@ abstract class Strings
         $slugs[$string][$additionalCharacter][$lowercase] = $slug;
 
         return $slug;
+    }
+
+    public static function convertToCamelCase(string $string, bool $shouldLowerFirst = true): string
+    {
+        preg_match_all('~\p{Lu}?\p{Ll}+|\p{Lu}+(?=\p{Lu}\p{Ll})|\p{Lu}+|\p{N}+~u', $string, $matches);
+        $string = implode('', array_map('self::capitalize', $matches[0]));
+
+        return $shouldLowerFirst ? self::lowerFirst($string) : $string;
+    }
+
+    public static function convertToPascalCase(string $string): string
+    {
+        return self::convertToCamelCase($string, false);
     }
 }
