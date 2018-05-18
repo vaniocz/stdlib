@@ -89,6 +89,15 @@ abstract class Strings
         return self::lower(self::substring($string, 0, 1)) . self::substring($string, 1);
     }
 
+    public static function baseName(string $string): string
+    {
+        if (DIRECTORY_SEPARATOR === '/') {
+            $string = strtr($string, '\\', '/');
+        }
+
+        return basename($string);
+    }
+
     /**
      * Convert the given $string to ASCII.
      *

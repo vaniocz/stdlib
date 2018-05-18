@@ -99,6 +99,16 @@ class StringsTest extends TestCase
         $this->assertSame('žLUŤOUČKÝ KŮŇ', Strings::lowerFirst('ŽLUŤOUČKÝ KŮŇ'));
     }
 
+    function test_obtaining_path_or_class_base_name()
+    {
+        $this->assertSame('', Strings::baseName(''));
+        $this->assertSame('foo', Strings::baseName('foo'));
+        $this->assertSame('bar', Strings::baseName('foo/bar'));
+        $this->assertSame('bar', Strings::baseName('foo\bar'));
+        $this->assertSame('baz', Strings::baseName('foo\bar/baz'));
+        $this->assertSame('baz', Strings::baseName('foo/bar\baz'));
+    }
+
     function test_converting_string_to_ascii()
     {
         $this->assertSame('Internationalizaetion', Strings::toAscii('Iñtërnâtiônàlizætiøn'));
