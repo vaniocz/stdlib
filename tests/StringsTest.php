@@ -99,6 +99,23 @@ class StringsTest extends TestCase
         $this->assertSame('žLUŤOUČKÝ KŮŇ', Strings::lowerFirst('ŽLUŤOUČKÝ KŮŇ'));
     }
 
+    function test_trimming_string()
+    {
+        $this->assertSame('', Strings::trim(''));
+        $this->assertSame('foo', Strings::trim(" \t\n\r\x00\x0B\u{A0}foo "));
+        $this->assertSame('foo', Strings::trim(" foo \t\n\r\x00\x0B\u{A0}"));
+    }
+
+    function test_trimming_string_from_left()
+    {
+        $this->assertSame('foo ', Strings::trimLeft(" \t\n\r\x00\x0B\u{A0}foo "));
+    }
+
+    function test_trimming_string_from_right()
+    {
+        $this->assertSame(' foo', Strings::trimRight(" foo \t\n\r\x00\x0B\u{A0}"));
+    }
+
     function test_obtaining_path_or_class_base_name()
     {
         $this->assertSame('', Strings::baseName(''));
@@ -159,6 +176,40 @@ class StringsTest extends TestCase
         $this->assertSame(1, $class::$toAsciiCalled);
     }
 
+    function test_matching_words()
+    {
+        $this->assertSame([], Strings::matchWords(''));
+        $this->assertSame(['lorem', 'Ipsum'], Strings::matchWords('loremIpsum'));
+        $this->assertSame(['lorem', 'ipsum'], Strings::matchWords('lorem ipsum'));
+        $this->assertSame(['lorem', 'ipsum'], Strings::matchWords("lorem\nipsum"));
+        $this->assertSame(['lorem', 'IPSUM'], Strings::matchWords('lorem  IPSUM'));
+        $this->assertSame(['lorem', 'ipsum'], Strings::matchWords('lorem_ipsum'));
+        $this->assertSame(['lorem', 'ipsum'], Strings::matchWords('lorem__ipsum'));
+        $this->assertSame(['Lorem', 'Ipsum'], Strings::matchWords('Lorem-Ipsum'));
+        $this->assertSame(['lorem', 'IPSUM', 'Dolor'], Strings::matchWords('loremIPSUMDolor'));
+        $this->assertSame(
+            ['Příliš', 'ŽLUŤOUČKÝ', 'KŮŇ', 'úpěl', '42', 'ďábelských', 'ód', '42', 'krát', 'za', 'sebou'],
+            Strings::matchWords('Příliš_ŽLUŤOUČKÝ_KŮŇ-úpěl  42ďábelských ód 42 krát za sebou')
+        );
+    }
+
+    function test_converting_string_to_pascal_case()
+    {
+        $this->assertSame('', Strings::convertToPascalCase(''));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('loremIpsum'));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem ipsum'));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase("lorem\nipsum"));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem  IPSUM'));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem_ipsum'));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem__ipsum'));
+        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('Lorem-Ipsum'));
+        $this->assertSame('LoremIpsumDolor', Strings::convertToPascalCase('loremIPSUMDolor'));
+        $this->assertSame(
+            'PřílišŽluťoučkýKůňÚpěl42ĎábelskýchÓd42KrátZaSebou',
+            Strings::convertToPascalCase('Příliš_ŽLUŤOUČKÝ_KŮŇ-úpěl  42ďábelských ód 42 krát za sebou')
+        );
+    }
+
     function test_converting_string_to_camel_case()
     {
         $this->assertSame('', Strings::convertToCamelCase(''));
@@ -176,20 +227,20 @@ class StringsTest extends TestCase
         );
     }
 
-    function test_converting_string_to_pascal_case()
+    function test_converting_string_to_snake_case()
     {
-        $this->assertSame('', Strings::convertToCamelCase(''));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('loremIpsum'));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem ipsum'));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase("lorem\nipsum"));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem  IPSUM'));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem_ipsum'));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('lorem__ipsum'));
-        $this->assertSame('LoremIpsum', Strings::convertToPascalCase('Lorem-Ipsum'));
-        $this->assertSame('LoremIpsumDolor', Strings::convertToPascalCase('loremIPSUMDolor'));
+        $this->assertSame('', Strings::convertToSnakeCase(''));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase('loremIpsum'));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase('lorem ipsum'));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase("lorem\nipsum"));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase('lorem  IPSUM'));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase('lorem_ipsum'));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase('lorem__ipsum'));
+        $this->assertSame('lorem_ipsum', Strings::convertToSnakeCase('Lorem-Ipsum'));
+        $this->assertSame('lorem_ipsum_dolor', Strings::convertToSnakeCase('loremIPSUMDolor'));
         $this->assertSame(
-            'PřílišŽluťoučkýKůňÚpěl42ĎábelskýchÓd42KrátZaSebou',
-            Strings::convertToPascalCase('Příliš_ŽLUŤOUČKÝ_KŮŇ-úpěl  42ďábelských ód 42 krát za sebou')
+            'příliš_žluťoučký_kůň_úpěl_42_ďábelských_ód_42_krát_za_sebou',
+            Strings::convertToSnakeCase('Příliš_ŽLUŤOUČKÝ_KŮŇ-úpěl  42ďábelských ód 42 krát za sebou')
         );
     }
 }

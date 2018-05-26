@@ -89,6 +89,27 @@ abstract class Strings
         return self::lower(self::substring($string, 0, 1)) . self::substring($string, 1);
     }
 
+    public static function trim(string $string, string $characters = null): string
+    {
+        $characters = $characters === null ? '\s\0' : preg_quote($characters, '~');
+
+        return preg_replace("~^[$characters]+|[$characters]+\z~u", '', $string);
+    }
+
+    public static function trimLeft(string $string, string $characters = null): string
+    {
+        $characters = $characters === null ? '\s\0' : preg_quote($characters, '~');
+
+        return preg_replace("~^[$characters]+~u", '', $string);
+    }
+
+    public static function trimRight(string $string, string $characters = null): string
+    {
+        $characters = $characters === null ? '\s\0' : preg_quote($characters, '~');
+
+        return preg_replace("~[$characters]+\z~u", '', $string);
+    }
+
     public static function baseName(string $string): string
     {
         if (DIRECTORY_SEPARATOR === '/') {
@@ -179,16 +200,30 @@ abstract class Strings
         return $slug;
     }
 
-    public static function convertToCamelCase(string $string, bool $shouldLowerFirst = true): string
+    /**
+     * @return string[]
+     */
+    public static function matchWords(string $string): array
     {
         preg_match_all('~\p{Lu}?\p{Ll}+|\p{Lu}+(?=\p{Lu}\p{Ll})|\p{Lu}+|\p{N}+~u', $string, $matches);
-        $string = implode('', array_map('self::capitalize', $matches[0]));
 
-        return $shouldLowerFirst ? self::lowerFirst($string) : $string;
+        return $matches[0];
     }
 
     public static function convertToPascalCase(string $string): string
     {
-        return self::convertToCamelCase($string, false);
+        $words = self::matchWords($string);
+
+        return implode('', array_map('self::capitalize', $words));
+    }
+
+    public static function convertToCamelCase(string $string, bool $shouldLowerFirst = true): string
+    {
+        return self::lowerFirst(self::convertToPascalCase($string));
+    }
+
+    public static function convertToSnakeCase(string $string): string
+    {
+        return self::lower(implode('_', self::matchWords($string)));
     }
 }
