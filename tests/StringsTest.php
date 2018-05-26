@@ -102,18 +102,18 @@ class StringsTest extends TestCase
     function test_trimming_string()
     {
         $this->assertSame('', Strings::trim(''));
-        $this->assertSame('foo', Strings::trim(" \t\n\r\x00\x0B\u{A0}foo "));
-        $this->assertSame('foo', Strings::trim(" foo \t\n\r\x00\x0B\u{A0}"));
+        $this->assertSame('foo', Strings::trim(" \t\n\r\0\x0B\u{A0}foo "));
+        $this->assertSame('foo', Strings::trim(" foo \t\n\r\0\x0B\u{A0}"));
     }
 
     function test_trimming_string_from_left()
     {
-        $this->assertSame('foo ', Strings::trimLeft(" \t\n\r\x00\x0B\u{A0}foo "));
+        $this->assertSame('foo ', Strings::trimLeft(" \t\n\r\0\x0B\u{A0}foo "));
     }
 
     function test_trimming_string_from_right()
     {
-        $this->assertSame(' foo', Strings::trimRight(" foo \t\n\r\x00\x0B\u{A0}"));
+        $this->assertSame(' foo', Strings::trimRight(" foo \t\n\r\0\x0B\u{A0}"));
     }
 
     function test_obtaining_path_or_class_base_name()
@@ -134,11 +134,11 @@ class StringsTest extends TestCase
             Strings::toAscii('Příliš ŽLUŤOUČKÝ KŮŇ úpěl ďábelské ódy')
         );
         $this->assertSame('Tarikh', Strings::toAscii('Taʾrikh'));
-        $this->assertSame('Z `\'"^~?', Strings::toAscii("\xc5\xbd `'\"^~?"));
+        $this->assertSame('Z `\'"^~?', Strings::toAscii("Ž `'\"^~?"));
         $this->assertSame('"""\'\'\'>><<^', Strings::toAscii('„“”‚‘’»«°'));
-        $this->assertSame('', Strings::toAscii("\xF0\x90\x80\x80")); // U+10000
-        $this->assertSame('', Strings::toAscii("\xC2\xA4")); // non-ASCII character
-        $this->assertSame('a b', Strings::toAscii("a\xC2\xA0b")); // non-breaking space
+        $this->assertSame('', Strings::toAscii("\u{10000}"));
+        $this->assertSame('', Strings::toAscii('¤'));
+        $this->assertSame('foo bar', Strings::toAscii("foo\u{A0}bar")); // non-breaking space
 
         if (class_exists('Transliterator') && \Transliterator::create('Any-Latin; Latin-ASCII')) {
             $this->assertSame('Athena->Moskva', Strings::toAscii('Αθήνα→Москва'));
@@ -152,8 +152,8 @@ class StringsTest extends TestCase
             'Prilis-ZLUTOUCKY-KUN-upel-dabelske-ody',
             Strings::slugify('&Příliš ŽLUŤOUČKÝ KŮŇ úpěl ďábelské ódy!', null, false)
         );
-        $this->assertSame('1-4-!', Strings::slugify("\xc2\xBC !", '!')); // non-ASCII character
-        $this->assertSame('a-b', Strings::slugify("a\xC2\xA0b")); // non-breaking space
+        $this->assertSame('1-4-!', Strings::slugify('¼ !', '!'));
+        $this->assertSame('a-b', Strings::slugify("a\u{A0}b")); // non-breaking space
     }
 
     function test_slugify_uses_cache()

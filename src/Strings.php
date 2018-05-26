@@ -134,10 +134,10 @@ abstract class Strings
         }
 
         $string = preg_replace('~[^\x09\x0A\x0D\x20-\x7E\xA0-\x{2FF}\x{370}-\x{10FFFF}]~u', '', $string);
-        $string = strtr($string, '`\'"^~?', "\x01\x02\x03\x04\x05\x06");
+        $string = strtr($string, '`\'"^~?', "\1\2\3\4\5\6");
         $string = str_replace(
-            ["\xE2\x80\x9E", "\xE2\x80\x9C", "\xE2\x80\x9D", "\xE2\x80\x9A", "\xE2\x80\x98", "\xE2\x80\x99", "\xC2\xB0"],
-            ["\x03", "\x03", "\x03", "\x02", "\x02", "\x02", "\x04"],
+            ["\u{201E}", "\u{201C}", "\u{201D}", "\u{201A}", "\u{2018}", "\u{2019}", "\u{B0}"],
+            ["\3", "\3", "\3", "\2", "\2", "\2", "\4"],
             $string
         );
 
@@ -147,14 +147,14 @@ abstract class Strings
 
         if (ICONV_IMPL === 'glibc') {
             $string = str_replace(
-                ["\xC2\xBB", "\xC2\xAB", "\xE2\x80\xA6", "\xE2\x84\xA2", "\xC2\xA9", "\xC2\xAE"],
+                ["\u{BB}", "\u{AB}", "\u{2026}", "\u{2122}", "\u{A9}", "\u{AE}"],
                 ['>>', '<<', '...', 'TM', '(c)', '(R)'],
                 $string
             );
             $string = iconv('UTF-8', 'WINDOWS-1250//TRANSLIT//IGNORE', $string);
             $string = strtr(
                 $string,
-                "\xa5\xa3\xbc\x8c\xa7\x8a\xaa\x8d\x8f\x8e\xaf\xb9\xb3\xbe\x9c\x9a\xba\x9d\x9f\x9e\xbf\xc0\xc1\xc2\xc3\xc4\xc5\xc6\xc7\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf\xd0\xd1\xd2\xd3\xd4\xd5\xd6\xd7\xd8\xd9\xda\xdb\xdc\xdd\xde\xdf\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf8\xf9\xfa\xfb\xfc\xfd\xfe\x96\xa0\x8b\x97\x9b\xa6\xad\xb7",
+                "\xA5\xA3\xBC\x8C\xA7\x8A\xAA\x8D\x8F\x8E\xAF\xB9\xB3\xBE\x9C\x9A\xBA\x9D\x9F\x9E\xBF\xC0\xC1\xC2\xC3\xC4\xC5\xC6\xC7\xC8\xC9\xCA\xCB\xCC\xCD\xCE\xCF\xD0\xD1\xD2\xD3\xD4\xD5\xD6\xD7\xD8\xD9\xDA\xDB\xDC\xDD\xDE\xDF\xE0\xE1\xE2\xE3\xE4\xE5\xE6\xE7\xE8\xE9\xEA\xEB\xEC\xED\xEE\xEF\xF0\xF1\xF2\xF3\xF4\xF5\xF6\xF8\xF9\xFA\xFB\xFC\xFD\xFE\x96\xA0\x8B\x97\x9B\xA6\xAD\xB7",
                 'ALLSSSSTZZZallssstzzzRAAAALCCCEEEEIIDDNNOOOOxRUUUUYTsraaaalccceeeeiiddnnooooruuuuyt- <->|-.'
             );
             $string = preg_replace('~[^\x00-\x7F]++~', '', $string);
@@ -164,7 +164,7 @@ abstract class Strings
 
         $string = str_replace(['`', "'", '"', '^', '~', '?'], '', $string);
 
-        return strtr($string, "\x01\x02\x03\x04\x05\x06", '`\'"^~?');
+        return strtr($string, "\1\2\3\4\5\6", '`\'"^~?');
     }
 
     /**
@@ -172,20 +172,20 @@ abstract class Strings
      *
      * @param string $string
      * @param string|null $additionalCharacter Additional allowed characters
-     * @param bool $lowercase Whether to lowercase or not
+     * @param bool $shouldLower Whether to convert the resulting string to lowercase or not
      * @return string
      */
-    public static function slugify(string $string, string $additionalCharacter = null, bool $lowercase = true): string
+    public static function slugify(string $string, string $additionalCharacter = null, bool $shouldLower = true): string
     {
         static $slugs = [];
 
-        if ($slug = $slugs[$string][$additionalCharacter][$lowercase] ?? null) {
+        if ($slug = $slugs[$string][$additionalCharacter][$shouldLower] ?? null) {
             return $slug;
         }
 
         $slug = static::toAscii($string);
 
-        if ($lowercase) {
+        if ($shouldLower) {
             $slug = strtolower($slug);
         }
 
@@ -195,7 +195,7 @@ abstract class Strings
             $slug
         );
         $slug = trim($slug, '-');
-        $slugs[$string][$additionalCharacter][$lowercase] = $slug;
+        $slugs[$string][$additionalCharacter][$shouldLower] = $slug;
 
         return $slug;
     }
@@ -217,7 +217,7 @@ abstract class Strings
         return implode('', array_map('self::capitalize', $words));
     }
 
-    public static function convertToCamelCase(string $string, bool $shouldLowerFirst = true): string
+    public static function convertToCamelCase(string $string): string
     {
         return self::lowerFirst(self::convertToPascalCase($string));
     }
