@@ -112,6 +112,14 @@ class UriTest extends TestCase
         $this->assertEquals(['foo' => 'foo'], $uri->withAppendedQuery('foo=foo')->queryParameters());
     }
 
+    function test_obtaining_absolute_uri()
+    {
+        $absoluteUri = 'https://user:password@example.com:8080/path/123?foo=bar#fragment';
+        $this->assertSame($absoluteUri, (new Uri($absoluteUri))->absoluteUri());
+        $this->assertSame('', (new Uri)->absoluteUri());
+        $this->assertSame('?foo=bar', (new Uri)->withAppendedQuery(['foo' => 'bar'])->absoluteUri());
+    }
+
     function test_uri_equals_to_another_uri()
     {
         $uri = new Uri('http://exampl%65.COM/p%61th?text=foo%20bar+baz&value');

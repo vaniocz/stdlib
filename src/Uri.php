@@ -346,7 +346,9 @@ class Uri
      */
     public function hostUri()
     {
-        return sprintf('%s//%s', $this->scheme ? $this->scheme . ':' : '', $this->authority());
+        return $this->host === null
+            ? null
+            : sprintf('%s//%s', $this->scheme ? $this->scheme . ':' : '', $this->authority());
     }
 
     /**
