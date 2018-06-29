@@ -208,7 +208,11 @@ class Uri
 
     public function withPort(int $port = null): self
     {
-        if ($this->port === $port) {
+        if ($port < 0) {
+            $port = -$port;
+        }
+
+        if ($this->port() === $port) {
             return $this;
         }
 
