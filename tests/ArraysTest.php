@@ -81,4 +81,15 @@ class ArraysTest extends TestCase
         $array = ['foo' => 'bar'];
         Arrays::unset($array, ['foo', 'bar']);
     }
+
+    function test_is_list()
+    {
+        $this->assertFalse(Arrays::isList(null));
+        $this->assertTrue(Arrays::isList([]));
+        $this->assertTrue(Arrays::isList([1]));
+        $this->assertTrue(Arrays::isList(['foo', 'bar', 'baz']));
+        $this->assertFalse(Arrays::isList([1 => 1, 2, 3]));
+        $this->assertFalse(Arrays::isList([1 => 'foo', 0 => 'bar']));
+        $this->assertFalse(Arrays::isList(['foo' => 'foo']));
+    }
 }
