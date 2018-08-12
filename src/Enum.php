@@ -122,8 +122,17 @@ abstract class Enum
     {
         static $valueNames = [];
 
-        return $valueNames[static::class]
-            ?? $valueNames[static::class] = array_keys((new ReflectionClass(static::class))->getConstants());
+        if (!isset($valueNames[static::class])) {
+            $valueNames[static::class] = [];
+
+            foreach ((new \ReflectionClass(static::class))->getReflectionConstants() as $reflectionConstant) {
+                if ($reflectionConstant->isPublic() && !$reflectionConstant->getDeclaringClass()->isInterface()) {
+                    $valueNames[static::class][] = $reflectionConstant->name;
+                }
+            }
+        }
+
+        return $valueNames[static::class];
     }
 
     /**

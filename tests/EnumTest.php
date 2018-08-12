@@ -7,11 +7,18 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Vanio\Stdlib\Enum;
 
-class Foo extends Enum
+interface Bar
 {
-    const BAR = 'FooBar';
-    const BAZ = ['FooBaz'];
-    const QUX = ['FooQux1', 'FooQux2'];
+    public const CORGE  = 'BarCorge';
+}
+
+class Foo extends Enum implements Bar
+{
+    public const BAR = 'FooBar';
+    public const BAZ = ['FooBaz'];
+    public const QUX = ['FooQux1', 'FooQux2'];
+    
+    private const QUUX = 'FooQux';
 
     /** @var string */
     public $value;
