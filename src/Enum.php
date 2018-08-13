@@ -29,7 +29,7 @@ abstract class Enum
      * Box the given plain value.
      * This is just an alias of the method box() with a bit more standard name.
      *
-     * @param scalar|array|null $plainValue The plain value to be boxed.
+     * @param mixed $plainValue The plain value to be boxed.
      *
      * @return static The boxed value.
      *
@@ -43,7 +43,7 @@ abstract class Enum
     /**
      * Box the given plain value.
      *
-     * @param scalar|array|null $plainValue The plain value to be boxed.
+     * @param mixed $plainValue The plain value to be boxed.
      *
      * @return static The boxed value.
      *
@@ -155,7 +155,7 @@ abstract class Enum
      *
      * @param string $name The name of the constant.
      *
-     * @return scalar|array|null The value of the given constant.
+     * @return mixed The value of the given constant.
      *
      * @throws InvalidArgumentException If no such constant exists.
      */
@@ -217,7 +217,7 @@ abstract class Enum
     /**
      * Unbox the value.
      *
-     * @return scalar|array|null The un-boxed value.
+     * @return mixed The un-boxed value.
      */
     final public function unbox()
     {
