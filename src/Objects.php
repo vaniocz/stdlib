@@ -68,6 +68,64 @@ class Objects
     }
 
     /**
+     * Creates an instance of the given $class using the given $factoryMethod passing the given arguments or named
+     * $parameters
+     *
+     * @param string $class
+     * @param mixed[]  $parameters
+     * @return object
+     */
+    public static function create(string $class, array $parameters, string $factoryMethod = '__construct')
+    {
+        return self::call($class, $factoryMethod, $parameters);
+    }
+
+    /**
+     * Calls the given $method on the given $object or class passing the given arguments or named $parameters.
+     *
+     * @param object|string $object
+     * @param string $method
+     * @param mixed[] $parameters
+     * @return object
+     */
+    public static function call($object, string $method, array $parameters)
+    {
+        $reflectionClass = new \ReflectionClass($object);
+        $reflectionMethod = $reflectionClass->getMethod($method);
+        $arguments = [];
+
+        foreach ($reflectionMethod->getParameters() as $i => $reflectionParameter) {
+            $argument = null;
+
+            if (array_key_exists($reflectionParameter->name, $parameters) || array_key_exists($i, $parameters)) {
+                $argument = $parameters[$reflectionParameter->name] ?? $parameters[$i] ?? null;
+            } elseif ($reflectionParameter->isDefaultValueAvailable()) {
+                $argument = $reflectionParameter->getDefaultValue();
+            }
+
+            if ($reflectionType = $reflectionParameter->getType()) {
+                if ($reflectionType->isBuiltin()) {
+                    if ($argument !== null || !$reflectionType->allowsNull()) {
+                        settype($argument, $reflectionType->getName());
+                    }
+                } elseif ($argument === null && !$reflectionType->allowsNull()) {
+                    return null;
+                }
+            }
+
+            $arguments[] = $argument;
+        }
+
+        if ($reflectionMethod->isConstructor()) {
+            return $reflectionClass->newInstanceArgs($arguments);
+        }
+
+        $reflectionMethod->setAccessible(true);
+
+        return $reflectionMethod->invokeArgs($reflectionMethod->isStatic() ? null : $object, $arguments);
+    }
+
+    /**
      * Get all constants of the given $class or object optionally prefixed by the given $prefix.
      *
      * @param object|string $class
