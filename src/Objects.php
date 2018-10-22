@@ -81,7 +81,7 @@ class Objects
     }
 
     /**
-     * Calls the given $method on the given $object or class passing the given arguments or named $parameters.
+     * Calls the given $method on the given $object or class passing the given arguments or named $parameters
      *
      * @param object|string $object
      * @param string $method
