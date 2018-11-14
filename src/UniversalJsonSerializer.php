@@ -65,20 +65,25 @@ class UniversalJsonSerializer
      */
     private static function objectProperties($object): array
     {
-        try {
-            $properties = Closure::bind(function () use ($object) {
-                return get_object_vars($object);
-            }, null, $object)->__invoke();
-        } catch (Throwable $e) {
-            $properties = get_object_vars($object);
-        }
-
         if ($object instanceof Serializable) {
-            $properties = ['$' => $object->serialize()];
-        } elseif (method_exists($object, '__sleep')) {
-            $properties = array_intersect_key($properties, array_flip($object->__sleep()));
+            return ['$' => $object->serialize()];
         }
 
-        return $properties;
+        $class = get_class($object);
+        $properties = [];
+
+        do {
+            try {
+                $properties += Closure::bind(function () use ($object) {
+                    return get_object_vars($object);
+                }, null, $class)->__invoke();
+            } catch (Throwable $e) {
+                return get_object_vars($object);
+            }
+        } while ($class = get_parent_class($class));
+
+        return method_exists($object, '__sleep')
+            ? array_intersect_key($properties, array_flip($object->__sleep()))
+            : $properties;
     }
 }

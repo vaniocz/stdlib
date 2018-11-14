@@ -91,7 +91,7 @@ class EnumTest extends TestCase
     function test_enum_values_cannot_be_cloned()
     {
         $this->expectException(ErrorException::class);
-        $this->expectExceptionMessage('There can be only one instance for each enummeration value.');
+        $this->expectExceptionMessage('There can be only one instance for each enumeration value.');
 
         clone Foo::BAR();
     }
@@ -118,14 +118,6 @@ class EnumTest extends TestCase
         $this->expectExceptionMessage('Value 123 is not within Vanio\Stdlib\Tests\Foo enumeration.');
 
         Foo::box(123);
-    }
-
-    function test_enum_values_cannot_be_serialized()
-    {
-        $this->expectException(ErrorException::class);
-        $this->expectExceptionMessage('Enumeration values cannot be serialized.');
-
-        serialize(Foo::BAR());
     }
 
     function test_enum_values_cannot_be_deserialized()

@@ -55,13 +55,22 @@ class UniversalJsonDeserializer
     private static function &provideObject(array &$data, array &$objects)
     {
         $id = $data['μ']['#'];
+
         if (isset($objects[$id])) {
             return $objects[$id];
         }
 
-        $reflection = self::reflect($data['μ']['fqn']);
-        $objects[$id] = $object = $reflection->newInstanceWithoutConstructor();
+        $class = $data['μ']['fqn'];
         unset($data['μ']);
+
+        if (method_exists($class, '__set_state')) {
+            $object = $class::{'__set_state'}($data);
+
+            return $object;
+        }
+
+        $reflection = self::reflect($class);
+        $objects[$id] = $object = $reflection->newInstanceWithoutConstructor();
 
         if ($object instanceof Serializable) {
             $object->unserialize($data['$']);

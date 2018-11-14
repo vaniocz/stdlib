@@ -125,7 +125,7 @@ abstract class Enum
         if (!isset($valueNames[static::class])) {
             $valueNames[static::class] = [];
 
-            foreach ((new \ReflectionClass(static::class))->getReflectionConstants() as $reflectionConstant) {
+            foreach ((new ReflectionClass(static::class))->getReflectionConstants() as $reflectionConstant) {
                 if ($reflectionConstant->isPublic() && !$reflectionConstant->getDeclaringClass()->isInterface()) {
                     $valueNames[static::class][] = $reflectionConstant->name;
                 }
@@ -176,19 +176,39 @@ abstract class Enum
      */
     final public function __clone()
     {
-        throw new ErrorException('There can be only one instance for each enummeration value.');
+        throw new ErrorException('There can be only one instance for each enumeration value.');
     }
 
     /**
-     * @throws ErrorException Prevents serialization.
+     * Get properties needed for serialization.
+     *
+     * @return string[]
      */
-    final public function __sleep()
+    final public function __sleep(): array
     {
-        throw new ErrorException('Enumeration values cannot be serialized.');
+        return ['name'];
     }
 
     /**
-     * @throws ErrorException Prevents deserialization.
+     * Get the value with the given name stored in a state array under name key.
+     *
+     * @param string[] $state
+     *
+     * @return Enum
+     *
+     * @throws InvalidArgumentException If the name key is missing
+     */
+    final public static function __set_state(array $state): self
+    {
+        if (!array_key_exists('name', $state)) {
+            throw new InvalidArgumentException('Cannot get an enumeration value from state array missing "name" key.');
+        }
+
+        return self::__callStatic($state['name'], []);
+    }
+
+    /**
+     * @throws ErrorException Prevents deserialization using unserialize function.
      */
     final public function __wakeup()
     {
