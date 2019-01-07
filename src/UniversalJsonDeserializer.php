@@ -64,9 +64,9 @@ class UniversalJsonDeserializer
         unset($data['μ']);
 
         if (method_exists($class, '__set_state')) {
-            $object = $class::{'__set_state'}($data);
+            $objects[$id] = $class::{'__set_state'}($data);
 
-            return $object;
+            return $objects[$id];
         }
 
         $reflection = self::reflect($class);
