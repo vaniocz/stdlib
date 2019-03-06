@@ -21,10 +21,16 @@ class UniversalJsonSerializer
      */
     public static function serialize($value): string
     {
-        return json_encode(
+        $serialized = json_encode(
             self::encode($value, new SplObjectStorage()),
             JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
         );
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \InvalidArgumentException(json_last_error_msg());
+        }
+
+        return $serialized;
     }
 
     /**

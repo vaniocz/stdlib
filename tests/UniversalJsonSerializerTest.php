@@ -11,6 +11,13 @@ use Vanio\Stdlib\UniversalJsonSerializer as Serializer;
 
 class UniversalJsonSerializerTest extends TestCase
 {
+    function test_exception_is_thrown_when_json_encode_fails()
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Inf and NaN cannot be JSON encoded');
+        Serializer::serialize(NAN);
+    }
+
     function test_single_scalar_value_is_serialized_correctly()
     {
         $this->assertSame('"test"', Serializer::serialize('test'));
