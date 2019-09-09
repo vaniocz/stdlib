@@ -54,14 +54,8 @@ class UniversalJsonDeserializer
      */
     private static function &provideObject(array &$data, array &$objects)
     {
-        $id = $data['μ']['#'];
-
-        if (isset($objects[$id])) {
-            return $objects[$id];
-        }
-
         $class = $data['μ']['fqn'];
-        unset($data['μ']);
+        $id = $data['μ']['#'];
 
         if (method_exists($class, '__set_state')) {
             $objects[$id] = $class::{'__set_state'}($data);
@@ -69,6 +63,11 @@ class UniversalJsonDeserializer
             return $objects[$id];
         }
 
+        if (isset($objects[$id])) {
+            return $objects[$id];
+        }
+
+        unset($data['μ']);
         $reflection = self::reflect($class);
         $objects[$id] = $object = $reflection->newInstanceWithoutConstructor();
 
