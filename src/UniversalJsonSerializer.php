@@ -50,13 +50,19 @@ class UniversalJsonSerializer
             }
 
             $isReference = isset($objectIds[$value]);
-
+            $class = get_class($value);
             $meta = [
                 '#' => !$isReference ? $objectIds[$value] = count($objectIds) : $objectIds[$value],
-                'fqn' => get_class($value),
+                'fqn' => $class,
             ];
 
-            $value = ($isReference ? [] : self::encode(self::objectProperties($value), $objectIds)) + ['μ' => $meta];
+            if ($isReference && !method_exists($class, '__set_state')) {
+                $value = [];
+            } else {
+                $value = self::encode(self::objectProperties($value), $objectIds);
+            }
+
+            $value += ['μ' => $meta];
         });
 
         return $encoded[0];
