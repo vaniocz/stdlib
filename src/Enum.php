@@ -13,6 +13,13 @@ use ReflectionClass;
 abstract class Enum
 {
     /**
+     * The plain value.
+     *
+     * @var mixed
+     */
+    protected $plainValue;
+
+    /**
      * The value name.
      *
      * @var string
@@ -21,9 +28,13 @@ abstract class Enum
 
     /**
      * Prevents instantiating from outside.
+     *
+     * param mixed $plainValue The plain value.
      */
-    protected function __construct()
-    {}
+    protected function __construct($plainValue)
+    {
+        $this->plainValue = $plainValue;
+    }
 
     /**
      * Box the given plain value.
