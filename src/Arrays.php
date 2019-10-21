@@ -69,15 +69,17 @@ abstract class Arrays
     public static function unset(array &$array, $path)
     {
         $path = (array) $path;
-        $referencePath = $path;
-        $key = array_pop($referencePath);
-        $array = &self::getReference($array, $referencePath);
+        $key = array_pop($path);
 
-        if (!is_array($array)) {
-            throw new \InvalidArgumentException(sprintf(
-                'Traversing the array at path %s contains non-array element.',
-                json_encode($path)
-            ));
+        foreach ($path as $p) {
+            if (!array_key_exists($p, $array)) {
+                return;
+            } elseif (!is_array($array[$p])) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Traversing the array at path %s contains non-array element.',
+                    json_encode($path)
+                ));
+            }
         }
 
         unset($array[$key]);
