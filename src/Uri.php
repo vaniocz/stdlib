@@ -89,8 +89,8 @@ class Uri
     public function __construct($uri = '')
     {
         if ($uri instanceof self) {
-            foreach ($this as $key => $val) {
-                $this->$key = $uri->$key;
+            foreach ($this as $property => $_) {
+                $this->$property = $uri->$property;
             }
         } else {
             if (!$parts = @parse_url($uri)) {
@@ -391,7 +391,7 @@ class Uri
 
     public static function encodeQuery(array $query): string
     {
-        return strtr(http_build_query($query, '', '&', PHP_QUERY_RFC3986), self::DECODED_CHARACTERS);
+        return strtr(self::buildQuery($query), self::DECODED_CHARACTERS);
     }
 
     private function resolvePath(string $host = null, string $path): string
@@ -405,5 +405,25 @@ class Uri
     private function setQuery($query)
     {
         $this->queryParameters = is_array($query) ? $query : self::parseQuery($query);
+    }
+
+    private static function buildQuery(array $query, string $numericPrefix = '', int $depth = 0): string
+    {
+        $queryStrings = [];
+        $isList = Arrays::isList($query);
+
+        foreach ($query as $name => $value) {
+            if ($depth) {
+                $name = $isList ? "{$numericPrefix}[]" : "{$numericPrefix}[{$name}]";
+            } elseif ($isList) {
+                $name = $numericPrefix . $name;
+            }
+
+            $queryStrings[] = is_array($value)
+                ? self::buildQuery($value, $name, $depth + 1)
+                : sprintf('%s=%s', rawurlencode($name), rawurlencode($value));
+        }
+
+        return implode('&', $queryStrings);
     }
 }

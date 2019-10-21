@@ -31,7 +31,7 @@ abstract class Enum
      *
      * param mixed $plainValue The plain value.
      */
-    protected function __construct($plainValue)
+    protected function __construct($plainValue = null)
     {
         $this->plainValue = $plainValue;
     }

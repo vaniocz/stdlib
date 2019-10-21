@@ -178,7 +178,9 @@ class UriTest extends TestCase
         $this->assertSame('', Uri::encodeQuery([]));
         $this->assertSame('key=', Uri::encodeQuery(['key' => '']));
         $this->assertSame('key=value', Uri::encodeQuery(['key' => 'value']));
-        $this->assertSame('foo%5B0%5D=bar&foo%5B1%5D=bar', Uri::encodeQuery(['foo' => ['bar', 'bar']]));
         $this->assertSame('a%5Bx%5D=value&a%5By%5D=value', Uri::encodeQuery(['a' => ['x' => 'value', 'y' => 'value']]));
+        $this->assertSame('foo%5B%5D=bar&foo%5B%5D=bar', Uri::encodeQuery(['foo' => ['bar', 'bar']]));
+        $this->assertSame('foo%5B1%5D=bar&foo%5B2%5D=bar', Uri::encodeQuery(['foo' => [1 => 'bar', 2 => 'bar']]));
+        $this->assertSame('1=foo&2=bar', Uri::encodeQuery([1 => 'foo', 2 => 'bar']));
     }
 }
