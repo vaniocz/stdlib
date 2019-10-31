@@ -389,9 +389,9 @@ class Uri
         return $query;
     }
 
-    public static function encodeQuery(array $query): string
+    public static function encodeQuery(array $query, bool $shouldOmitEmptyValues = false): string
     {
-        return strtr(self::buildQuery($query), self::DECODED_CHARACTERS);
+        return strtr(self::buildQuery($query, $shouldOmitEmptyValues), self::DECODED_CHARACTERS);
     }
 
     private function resolvePath(string $host = null, string $path): string
@@ -407,8 +407,12 @@ class Uri
         $this->queryParameters = is_array($query) ? $query : self::parseQuery($query);
     }
 
-    private static function buildQuery(array $query, string $numericPrefix = '', int $depth = 0): string
-    {
+    private static function buildQuery(
+        array $query,
+        bool $shouldOmitEmptyValues = false,
+        string $numericPrefix = '',
+        int $depth = 0
+    ): string {
         $queryStrings = [];
         $isList = Arrays::isList($query);
 
@@ -419,9 +423,13 @@ class Uri
                 $name = $numericPrefix . $name;
             }
 
-            $queryStrings[] = is_array($value)
-                ? self::buildQuery($value, $name, $depth + 1)
-                : sprintf('%s=%s', rawurlencode($name), rawurlencode($value));
+            if (is_array($value)) {
+                $queryStrings[] = self::buildQuery($value, $shouldOmitEmptyValues, $name, $depth + 1);
+            } else {
+                $queryStrings[] = $shouldOmitEmptyValues && (string) $value === ''
+                    ? rawurlencode($name)
+                    : sprintf('%s=%s', rawurlencode($name), rawurlencode($value));
+            }
         }
 
         return implode('&', $queryStrings);
