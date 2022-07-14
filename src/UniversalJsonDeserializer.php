@@ -67,9 +67,15 @@ class UniversalJsonDeserializer
             return $objects[$id];
         }
 
+        $reflection = self::reflect($data['μ']['fqn']);
+
+        if ($reflection->isEnum()) {
+            $objects[$id] = $object = $data['μ']['fqn']::from($data['value']);
+            return $object;
+        } else {
+            $objects[$id] = $object = $reflection->newInstanceWithoutConstructor();
+        }
         unset($data['μ']);
-        $reflection = self::reflect($class);
-        $objects[$id] = $object = $reflection->newInstanceWithoutConstructor();
 
         if ($object instanceof Serializable) {
             $object->unserialize($data['$']);
