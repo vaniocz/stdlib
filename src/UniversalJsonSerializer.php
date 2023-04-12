@@ -3,6 +3,7 @@
 namespace Vanio\Stdlib;
 
 use Closure;
+use DateTimeInterface;
 use Serializable;
 use SplObjectStorage;
 use Throwable;
@@ -79,6 +80,10 @@ class UniversalJsonSerializer
     {
         if ($object instanceof Serializable) {
             return ['$' => $object->serialize()];
+        }
+
+        if ($object instanceof DateTimeInterface) {
+            return json_decode(json_encode($object), true);
         }
 
         $class = get_class($object);
