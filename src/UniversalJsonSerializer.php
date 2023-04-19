@@ -57,7 +57,11 @@ class UniversalJsonSerializer
                 'fqn' => $class,
             ];
 
-            if ($isReference && !method_exists($class, '__set_state')) {
+            if (
+                $isReference
+                && !method_exists($class, '__set_state')
+                && (!function_exists('enum_exists') || !enum_exists($class))
+            ) {
                 $value = [];
             } else {
                 $value = self::encode(self::objectProperties($value), $objectIds);
