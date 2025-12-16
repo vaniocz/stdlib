@@ -59,7 +59,7 @@ abstract class Strings
         return false;
     }
 
-    public static function substring(string $string, int $start, int $length = null): string
+    public static function substring(string $string, int $start, ?int $length = null): string
     {
         return mb_substr($string, $start, $length, 'UTF-8');
     }
@@ -89,21 +89,21 @@ abstract class Strings
         return self::lower(self::substring($string, 0, 1)) . self::substring($string, 1);
     }
 
-    public static function trim(string $string, string $characters = null): string
+    public static function trim(string $string, ?string $characters = null): string
     {
         $characters = $characters === null ? '\s\0' : preg_quote($characters, '~');
 
         return preg_replace("~^[$characters]+|[$characters]+\z~u", '', $string);
     }
 
-    public static function trimLeft(string $string, string $characters = null): string
+    public static function trimLeft(string $string, ?string $characters = null): string
     {
         $characters = $characters === null ? '\s\0' : preg_quote($characters, '~');
 
         return preg_replace("~^[$characters]+~u", '', $string);
     }
 
-    public static function trimRight(string $string, string $characters = null): string
+    public static function trimRight(string $string, ?string $characters = null): string
     {
         $characters = $characters === null ? '\s\0' : preg_quote($characters, '~');
 
@@ -175,7 +175,7 @@ abstract class Strings
      * @param bool $shouldLower Whether to convert the resulting string to lowercase or not
      * @return string
      */
-    public static function slugify(string $string, string $additionalCharacter = null, bool $shouldLower = true): string
+    public static function slugify(string $string, ?string $additionalCharacter = null, bool $shouldLower = true): string
     {
         static $slugs = [];
 
@@ -214,7 +214,7 @@ abstract class Strings
     {
         $words = self::matchWords($string);
 
-        return implode('', array_map('self::capitalize', $words));
+        return implode('', array_map([self::class, 'capitalize'], $words));
     }
 
     public static function convertToCamelCase(string $string): string
